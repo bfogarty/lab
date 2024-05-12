@@ -1,0 +1,30 @@
+name: IAC
+on:
+  pull_request:
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup cdktf project
+        uses: ./.github/actions/setup_iac
+
+      - run: poetry run ruff check
+        working-directory: ./iac
+
+      - run: poetry run ruff format --check
+        working-directory: ./iac
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup cdktf project
+        uses: ./.github/actions/setup_iac
+
+      - run: poetry run pytest
+        working-directory: ./iac

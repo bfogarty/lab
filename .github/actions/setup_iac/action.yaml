@@ -1,0 +1,58 @@
+name: Setup IAC project
+inputs:
+  python-version:
+    default: 3.11
+  terraform-version:
+    default: 1.8.3
+  cdktf-cli-version:
+    default: ^0.20.5
+runs:
+  using: composite
+  steps:
+    - name: Setup terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.terraform-version }}
+        # hashicorp/terraform-cdk#1020
+        terraform_wrapper: false
+
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: "lts/*"
+        cache: npm
+        # we don't have a package-lock.json, we want to cache global
+        # packages, so we bust the cache if this action changes
+        cache-dependency-path: .github/actions/setup_iac/action.yaml
+
+    - name: Install cdktf-cli
+      run: npm install -g cdktf-cli@${{ inputs.cdktf-cli-version }}
+      shell: bash
+
+    - name: Install poetry
+      run: pipx install poetry
+      shell: bash
+
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: poetry
+
+    - name: Install project dependencies
+      run: poetry install
+      working-directory: ./iac
+      shell: bash
+
+    - name: Restore cached module and provider code
+      uses: actions/cache@v3
+      with:
+        path: iac/imports
+        key: ${{ runner.os }}-tf-imports-${{ hashFiles('iac/cdktf.json') }}
+        restore-keys: |
+          ${{ runner.os }}-tf-imports-
+
+    - name: Generate module and provider code
+      run: cdktf get
+      shell: bash
+      working-directory: iac
