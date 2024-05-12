@@ -33,13 +33,14 @@ def synth(
     """
     app = App()
 
-    CloudBackend(
-        app,
-        organization=tfc_organization,
-        workspaces=NamedCloudWorkspace(tfc_workspace),
-    )
+    stacks = [Lab(app, "lab")]
 
-    Lab(app, "lab")
+    for s in stacks:
+        CloudBackend(
+            s,
+            organization=tfc_organization,
+            workspaces=NamedCloudWorkspace(tfc_workspace),
+        )
 
     app.synth()
 

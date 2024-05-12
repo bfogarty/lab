@@ -3,10 +3,10 @@
   "app": "poetry run labcli synth",
   "projectId": "d53bc1e2-52ff-4ec6-ab8d-38d9b42b708a",
   "sendCrashReports": "false",
-  "terraformProviders": [],
+  "terraformProviders": [
+    "oracle/oci@~> 5.41"
+  ],
   "terraformModules": [],
   "codeMakerOutput": "imports",
-  "context": {
-
-  }
+  "context": {}
 }
