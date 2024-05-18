@@ -1,7 +1,10 @@
 from constructs import Construct
-from cdktf import TerraformStack, TerraformVariable
+from cdktf import TerraformModuleProvider, TerraformStack, TerraformVariable
 
 from imports.oci.provider import OciProvider
+from imports.oci.identity_compartment import IdentityCompartment
+
+from imports.oke import Oke
 
 from lab.constructs import Budget
 
@@ -24,7 +27,7 @@ class Lab(TerraformStack):
 
         alerts_email = TerraformVariable(self, "alerts_email", type="string")
 
-        OciProvider(
+        oci = OciProvider(
             self,
             "oci",
             tenancy_ocid=tenancy_ocid.string_value,
@@ -43,4 +46,42 @@ class Lab(TerraformStack):
             forecasted_alert_thresholds=[100.0, 200.0],
             actual_alert_thresholds=[50.0, 100.0, 200.0],
             alert_recipients=[alerts_email.string_value],
+        )
+
+        lab = IdentityCompartment(
+            self,
+            "lab",
+            compartment_id=tenancy_ocid.string_value,
+            description="Lab",
+            name="lab",
+        )
+
+        Oke(
+            self,
+            "lab_cluster",
+
+            cluster_name="lab",
+            kubernetes_version="v1.29.1",
+            tenancy_id=tenancy_ocid.string_value,
+            compartment_id=lab.compartment_id,
+
+            control_plane_is_public=True,
+            assign_public_ip_to_control_plane=True,
+            create_bastion=False,
+            create_operator=False,
+
+            # workaround: module should disable operator subnet, but doesn't
+            subnets={
+                "bastion": {"newbits": 13},
+                "operator": {"create": "never"},
+                "cp": {"newbits": 13},
+                "int_lb": {"newbits": 11},
+                "pub_lb": {"newbits": 11},
+                "workers": {"newbits": 4},
+                "pods": {"newbits": 2},
+            },
+
+            providers=[
+                TerraformModuleProvider(module_alias="home", provider=oci)
+            ],
         )
