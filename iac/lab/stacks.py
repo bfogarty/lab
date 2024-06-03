@@ -1,10 +1,9 @@
 from constructs import Construct
-from cdktf import TerraformModuleProvider, TerraformStack, TerraformVariable
+from cdktf import TerraformStack, TerraformVariable
 
+from iac.lab.constructs.k8s_cluster import KubernetesCluster
 from imports.oci.provider import OciProvider
 from imports.oci.identity_compartment import IdentityCompartment
-
-from imports.oke import Oke
 
 from lab.constructs import Budget
 
@@ -56,32 +55,11 @@ class Lab(TerraformStack):
             name="lab",
         )
 
-        Oke(
+        KubernetesCluster(
             self,
-            "lab_cluster",
-
-            cluster_name="lab",
-            kubernetes_version="v1.29.1",
+            "lab",
+            name="lab",
+            oci_provider=oci,
             tenancy_id=tenancy_ocid.string_value,
             compartment_id=lab.compartment_id,
-
-            control_plane_is_public=True,
-            assign_public_ip_to_control_plane=True,
-            create_bastion=False,
-            create_operator=False,
-
-            # workaround: module should disable operator subnet, but doesn't
-            subnets={
-                "bastion": {"newbits": 13},
-                "operator": {"create": "never"},
-                "cp": {"newbits": 13},
-                "int_lb": {"newbits": 11},
-                "pub_lb": {"newbits": 11},
-                "workers": {"newbits": 4},
-                "pods": {"newbits": 2},
-            },
-
-            providers=[
-                TerraformModuleProvider(module_alias="home", provider=oci)
-            ],
         )
