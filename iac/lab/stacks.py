@@ -1,11 +1,10 @@
 from constructs import Construct
 from cdktf import TerraformStack, TerraformVariable
 
-from iac.lab.constructs.k8s_cluster import KubernetesCluster
 from imports.oci.provider import OciProvider
 from imports.oci.identity_compartment import IdentityCompartment
 
-from lab.constructs import Budget
+from lab.constructs import Budget, KubernetesCluster
 
 
 class Lab(TerraformStack):
@@ -49,7 +48,7 @@ class Lab(TerraformStack):
 
         lab = IdentityCompartment(
             self,
-            "lab",
+            "compartment-lab",
             compartment_id=tenancy_ocid.string_value,
             description="Lab",
             name="lab",
@@ -57,7 +56,7 @@ class Lab(TerraformStack):
 
         KubernetesCluster(
             self,
-            "lab",
+            "cluster-lab",
             name="lab",
             oci_provider=oci,
             tenancy_id=tenancy_ocid.string_value,
