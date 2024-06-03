@@ -20,6 +20,7 @@ class Budget(Construct):
             on actual spend
         alert_recipients: emails that should receive budget alerts
     """
+
     def __init__(
         self,
         scope: Construct,
