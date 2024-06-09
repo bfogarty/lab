@@ -21,6 +21,8 @@ class KubernetesCluster(Construct):
     ):
         super().__init__(scope, id_)
 
+        # module pinned below < 5.1.1 to work around bug disabling operator
+        # where subnets and security groups are still created
         Oke(
             self,
             f"cluster-{name}",
@@ -29,19 +31,8 @@ class KubernetesCluster(Construct):
             tenancy_id=tenancy_id,
             compartment_id=compartment_id,
             control_plane_is_public=True,
-            assign_public_ip_to_control_plane=True,
             create_bastion=False,
             create_operator=False,
-            # workaround: module should disable operator subnet, but doesn't
-            subnets={
-                "bastion": {"newbits": 13},
-                "operator": {"create": "never"},
-                "cp": {"newbits": 13},
-                "int_lb": {"newbits": 11},
-                "pub_lb": {"newbits": 11},
-                "workers": {"newbits": 4},
-                "pods": {"newbits": 2},
-            },
             worker_pools={
                 "default": {
                     "mode": "node-pool",
