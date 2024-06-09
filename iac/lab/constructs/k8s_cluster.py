@@ -42,6 +42,16 @@ class KubernetesCluster(Construct):
                 "workers": {"newbits": 4},
                 "pods": {"newbits": 2},
             },
+            worker_pools={
+                "default": {
+                    "mode": "node-pool",
+                    "size": 2,
+                    "shape": "VM.Standard.A1.Flex",
+                    "ocpus": 2,
+                    "memory": 12,
+                    "boot_volume_size": 50,
+                },
+            },
             providers=[
                 TerraformModuleProvider(module_alias="home", provider=oci_provider)
             ],
