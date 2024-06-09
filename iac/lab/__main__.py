@@ -1,54 +1,11 @@
-from typing import Annotated
-import typer
-
-from cdktf import App, CloudBackend, NamedCloudWorkspace
-
-from lab.stacks import Lab
+from lab.cli import register_infra_cli, register_k8s_cli
+from lab.libs.cli import make_typer
 
 
-cli = typer.Typer(no_args_is_help=True)
+app = make_typer()
 
-
-def make_envvar(name: str) -> str:
-    return f"LAB_{name}"
-
-
-@cli.command()
-def synth(
-    tfc_organization: Annotated[
-        str,
-        typer.Option(
-            envvar=make_envvar("TFC_ORGANIZATION"), help="Terraform Cloud organization"
-        ),
-    ],
-    tfc_workspace: Annotated[
-        str,
-        typer.Option(
-            envvar=make_envvar("TFC_WORKSPACE"), help="Terraform Cloud workspace"
-        ),
-    ] = "lab",
-) -> None:
-    """
-    Synthesizes this project to Terraform.
-    """
-    app = App()
-
-    stacks = [Lab(app, "lab")]
-
-    for s in stacks:
-        CloudBackend(
-            s,
-            organization=tfc_organization,
-            workspaces=NamedCloudWorkspace(tfc_workspace),
-        )
-
-    app.synth()
-
-
-@cli.callback()
-def callback():
-    pass
-
+register_infra_cli(app)
+register_k8s_cli(app)
 
 if __name__ == "__main__":
-    cli()
+    app()

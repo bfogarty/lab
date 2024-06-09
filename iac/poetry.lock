@@ -43,6 +43,23 @@ tomlkit = ["tomlkit (>=0.11.8)"]
 ujson = ["ujson (>=5.7.0)"]
 
 [[package]]
+name = "cdk8s"
+version = "2.68.77"
+description = "This is the core library of Cloud Development Kit (CDK) for Kubernetes (cdk8s). cdk8s apps synthesize into standard Kubernetes manifests which can be applied to any Kubernetes cluster."
+optional = false
+python-versions = "~=3.8"
+files = [
+    {file = "cdk8s-2.68.77-py3-none-any.whl", hash = "sha256:c0df04b2cf189ea14d76025abd63ea92a08e8eded04e028f9042e81fd17e5b2f"},
+    {file = "cdk8s-2.68.77.tar.gz", hash = "sha256:a1fa1fbf78c6fee2cefe68e39f3bc8267016745e6005d6bfc433eed9ebde8df1"},
+]
+
+[package.dependencies]
+constructs = ">=10.0.0,<11.0.0"
+jsii = ">=1.99.0,<2.0.0"
+publication = ">=0.0.3"
+typeguard = ">=2.13.3,<2.14.0"
+
+[[package]]
 name = "cdktf"
 version = "0.20.7"
 description = "Cloud Development Kit for Terraform"
@@ -128,13 +145,13 @@ files = [
 
 [[package]]
 name = "jsii"
-version = "1.98.0"
+version = "1.99.0"
 description = "Python client for jsii runtime"
 optional = false
 python-versions = "~=3.8"
 files = [
-    {file = "jsii-1.98.0-py3-none-any.whl", hash = "sha256:3067d523126ce8178374dd958c60350efc831fc2ef3eb94a0a755d64fa4cc22d"},
-    {file = "jsii-1.98.0.tar.gz", hash = "sha256:64bbaf9c494626bc0afd1b95834f0dba66a2f2ecbb0da97fa3000c4b01d67857"},
+    {file = "jsii-1.99.0-py3-none-any.whl", hash = "sha256:e352232efb2c1994e882aab8c571c764055336b5c97c0f67ac654fbf3caa2411"},
+    {file = "jsii-1.99.0.tar.gz", hash = "sha256:36e4c033d39b962c9d53910aa3e32cd16efa2109e4113fbd9d1be2e595350fe1"},
 ]
 
 [package.dependencies]
@@ -378,4 +395,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f0ab90689b829fa4337d8f72228b8375142ee18dd608e2c87155a0d1b939af4e"
+content-hash = "5d9396737b47fe846f2c42640443c513faf15e097be0737042dbd2474a64f646"
