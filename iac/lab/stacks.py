@@ -2,8 +2,9 @@ from constructs import Construct
 from cdktf import TerraformStack, TerraformVariable
 
 from imports.oci.provider import OciProvider
+from imports.oci.identity_compartment import IdentityCompartment
 
-from lab.constructs import Budget
+from lab.constructs import Budget, KubernetesCluster
 
 
 class Lab(TerraformStack):
@@ -24,7 +25,7 @@ class Lab(TerraformStack):
 
         alerts_email = TerraformVariable(self, "alerts_email", type="string")
 
-        OciProvider(
+        oci = OciProvider(
             self,
             "oci",
             tenancy_ocid=tenancy_ocid.string_value,
@@ -43,4 +44,21 @@ class Lab(TerraformStack):
             forecasted_alert_thresholds=[100.0, 200.0],
             actual_alert_thresholds=[50.0, 100.0, 200.0],
             alert_recipients=[alerts_email.string_value],
+        )
+
+        lab = IdentityCompartment(
+            self,
+            "compartment-lab",
+            compartment_id=tenancy_ocid.string_value,
+            description="Lab",
+            name="lab",
+        )
+
+        KubernetesCluster(
+            self,
+            "cluster-lab",
+            name="lab",
+            oci_provider=oci,
+            tenancy_id=tenancy_ocid.string_value,
+            compartment_id=lab.compartment_id,
         )
