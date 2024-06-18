@@ -1,5 +1,5 @@
 from typing import IO
-from pydantic import BaseModel, ValidationError, SecretStr
+from pydantic import BaseModel, ValidationError
 
 from lab.libs.exceptions import ConfigError
 
@@ -7,8 +7,7 @@ import yaml
 
 
 class Config(BaseModel):
-    tailscale_client_id: str
-    tailscale_client_secret: SecretStr
+    pass
 
 
 def parse_config(raw_config: IO) -> Config:
