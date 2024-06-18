@@ -17,7 +17,7 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
     app = App()
 
     try:
-        config = parse_config(config_file)
+        parse_config(config_file)
     except ConfigError as e:
         print(f"[red]{e}[/red]")
         raise typer.Exit(1) from e
