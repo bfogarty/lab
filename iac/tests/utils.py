@@ -25,7 +25,8 @@ def get_resource(obj: list[Any], kind: str, name: str | Pattern) -> Any:
         return next(
             x
             for x in obj
-            if x["kind"] == kind and str_match(x["metadata"]["name"], name)
+            if x.get("kind") == kind
+            and str_match(x.get("metadata", {}).get("name"), name)
         )
-    except KeyError:
+    except StopIteration:
         return None
