@@ -17,10 +17,12 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
     app = App()
 
     try:
-        parse_config(config_file)
+        config = parse_config(config_file)
     except ConfigError as e:
         print(f"[red]{e}[/red]")
         raise typer.Exit(1) from e
+
+    Tailscale(app, "tailscale", config=config.tailscale)
 
     app.synth()
 

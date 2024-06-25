@@ -1,13 +1,23 @@
-from typing import IO
-from pydantic import BaseModel, ValidationError
+from typing import IO, Optional
+from pydantic import BaseModel, ValidationError, SecretStr
 
 from lab.libs.exceptions import ConfigError
 
 import yaml
 
 
+class TailscaleClusterApiProxy(BaseModel):
+    cluster_admins: list[str] = []
+
+
+class TailscaleConfig(BaseModel):
+    client_id: str
+    client_secret: SecretStr
+    cluster_api_proxy: Optional[TailscaleClusterApiProxy] = None
+
+
 class Config(BaseModel):
-    pass
+    tailscale: TailscaleConfig
 
 
 def parse_config(raw_config: IO) -> Config:
