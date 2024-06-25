@@ -75,7 +75,7 @@ class TestTailscaleApiProxyEnabled:
         deployment = get_resource(chart, "Deployment", "operator")
         assert "true" == _get_api_server_proxy_status(deployment)
 
-    def test_api_proxy_rbac(self, chart: list[Any]) -> None:
+    def test_includes_authproxy_rbac_manifest(self, chart: list[Any]) -> None:
         assert get_resource(chart, "ClusterRoleBinding", "tailscale-auth-proxy")
 
     def test_api_proxy_clusterrolebinding(self, chart: list[Any]) -> None:
