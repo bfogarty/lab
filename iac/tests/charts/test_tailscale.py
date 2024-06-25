@@ -52,8 +52,7 @@ class TestTailscaleDefault:
         assert "false" == _get_api_server_proxy_status(deployment)
 
     def test_default_no_api_proxy_rbac(self, chart: list[Any]) -> None:
-        with pytest.raises(StopIteration):
-            get_resource(chart, "ClusterRoleBinding", "tailscale-auth-proxy")
+        assert get_resource(chart, "ClusterRoleBinding", "tailscale-auth-proxy") is None
 
 
 class TestTailscaleApiProxyEnabled:
