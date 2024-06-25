@@ -14,11 +14,12 @@ class TestInclude:
             url=str(Path(__file__).parent / "deployments.yaml"),
         )
 
-    def test_find_object_is_api_object(self, deployments: Include) -> None:
-        assert isinstance(
-            deployments.find_object(kind="Deployment", name="nginx-deployment"),
-            cdk8s.ApiObject,
-        )
+    def test_find_object(self, deployments: Include) -> None:
+        obj = deployments.find_object(kind="Deployment", name="nginx-deployment")
+
+        assert isinstance(obj, cdk8s.ApiObject)
+        assert obj.kind == "Deployment"
+        assert obj.name == "nginx-deployment"
 
     def test_find_object_case_insensitive(self, deployments: Include) -> None:
         assert (

@@ -41,13 +41,14 @@ class TestSetDeploymentContainerEnv:
                 env_value="test-value",
             )
 
-    def test_deployments_spec(self) -> None:
+    def test_invalid_deployment_spec(self) -> None:
         include = Include(
             cdk8s.Testing.chart(),
             "include",
             url=str(Path(__file__).parent / "deployments.yaml"),
         )
 
+        # load a known bad deployment spec
         deploy = include.find_object(kind="Deployment", name="invalid-deployment")
         assert deploy, "error loading deployment fixture"
 
