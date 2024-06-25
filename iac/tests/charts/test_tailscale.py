@@ -1,11 +1,11 @@
 from collections.abc import Generator
 import re
-from typing import Any, Optional
+from typing import Any
 import pytest
 import cdk8s
 
 from lab.charts.tailscale import Tailscale
-from lab.libs.config import Config, TailscaleClusterApiProxy, TailscaleConfig
+from lab.libs.config import TailscaleClusterApiProxy, TailscaleConfig
 from tests.utils import get_resource
 from pydantic import SecretStr
 

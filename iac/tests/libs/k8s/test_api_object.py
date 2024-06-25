@@ -1,4 +1,3 @@
-from typing import Any
 
 from lab.libs.exceptions import LabError
 from lab.libs.k8s.api_object import set_deployment_container_env
@@ -55,7 +54,7 @@ class TestSetDeploymentContainerEnv:
 
         with pytest.raises(
             LabError,
-            match=f"error parsing containers, is 'invalid-deployment' a valid deployment?",
+            match="error parsing containers, is 'invalid-deployment' a valid deployment?",
         ):
             set_deployment_container_env(
                 deploy,

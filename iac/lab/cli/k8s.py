@@ -4,6 +4,7 @@ from rich import print
 import typer
 from lab.libs.cli import make_typer
 
+from lab.charts import Tailscale
 from lab.libs.config import parse_config
 from lab.libs.exceptions import ConfigError
 

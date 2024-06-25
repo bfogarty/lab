@@ -3,7 +3,7 @@ from constructs import Construct
 
 from cdk8s import Chart
 
-from lab.libs.config import Config, TailscaleClusterApiProxy, TailscaleConfig
+from lab.libs.config import TailscaleClusterApiProxy, TailscaleConfig
 from lab.libs.exceptions import LabError
 from lab.libs.k8s.include import Include
 from lab.libs.k8s.api_object import patch_obj, set_deployment_container_env
