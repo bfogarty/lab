@@ -4,6 +4,7 @@ from rich import print
 import typer
 from lab.libs.cli import make_typer
 
+from lab.charts import Tailscale
 from lab.libs.config import parse_config
 from lab.libs.exceptions import ConfigError
 
@@ -17,10 +18,12 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
     app = App()
 
     try:
-        parse_config(config_file)
+        config = parse_config(config_file)
     except ConfigError as e:
         print(f"[red]{e}[/red]")
         raise typer.Exit(1) from e
+
+    Tailscale(app, "tailscale", config=config.tailscale)
 
     app.synth()
 
