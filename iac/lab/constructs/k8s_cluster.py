@@ -9,6 +9,9 @@ from imports.oci.provider import OciProvider
 class KubernetesCluster(Construct):
     VERSION = "v1.29.1"
 
+    # control upgrades to workers by pinning the image
+    PINNED_WORKER_IMAGE = "ocid1.image.oc1.iad.aaaaaaaahlop3h45zzpfcjdrmzqg3yebrnsdrblicwyr57jb4o7f6pxhu7dq"
+
     def __init__(
         self,
         scope: Construct,
@@ -43,6 +46,8 @@ class KubernetesCluster(Construct):
                     "boot_volume_size": 50,
                 },
             },
+            worker_image_type="custom",
+            worker_image_id=KubernetesCluster.PINNED_WORKER_IMAGE,
             providers=[
                 TerraformModuleProvider(module_alias="home", provider=oci_provider)
             ],
