@@ -72,7 +72,7 @@ class CloudflareAcmeIssuer(Chart):
             ),
         )
 
-        cm.ClusterIssuer(
+        issuer = cm.ClusterIssuer(
             self,
             f"{id_}-cluster-issuer",
             metadata=ApiObjectMetadata(
@@ -89,3 +89,9 @@ class CloudflareAcmeIssuer(Chart):
                 )
             ),
         )
+
+        self._cluster_issuer_name = issuer.name
+
+    @property
+    def cluster_issuer_name(self) -> str:
+        return self._cluster_issuer_name
