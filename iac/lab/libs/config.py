@@ -19,6 +19,24 @@ class CloudflareDnsConfig(BaseModel):
     local_network_cidr: IPv4Network
 
 
+class BitwardenSmtpConfig(BaseModel):
+    host: str
+    port: int
+    username: str
+    password: SecretStr
+    use_explicit_tls: bool = True
+    from_email: str
+    from_name: str
+
+
+class BitwardenConfig(BaseModel):
+    admin_token: SecretStr
+    smtp: BitwardenSmtpConfig
+    domain: str
+    organization_name: str
+    icon_blacklist_regex: str = ""
+
+
 class TailscaleClusterApiProxy(BaseModel):
     cluster_admins: list[str] = []
 
@@ -34,6 +52,7 @@ class IngressConfig(BaseModel):
 
 
 class Config(BaseModel):
+    bitwarden: BitwardenConfig
     tailscale: TailscaleConfig
     cloudflare_acme_issuer: CloudflareAcmeIssuerConfig
     cloudflare_dns: CloudflareDnsConfig

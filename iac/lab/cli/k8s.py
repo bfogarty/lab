@@ -5,6 +5,7 @@ import typer
 from lab.libs.cli import make_typer
 
 from lab.charts import (
+    Bitwarden,
     CloudflareExternalDns,
     CertManager,
     IngressNginx,
@@ -35,7 +36,7 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
     IngressNginx(app, "ingress-nginx", config.ingress)
     CloudflareExternalDns(app, "cloudflare-external-dns", config=config.cloudflare_dns)
     CertManager(app, "cert-manager")
-    CloudflareAcmeIssuer(
+    issuer = CloudflareAcmeIssuer(
         app,
         "cloudflare-acme-issuer",
         config=config.cloudflare_acme_issuer,
@@ -46,6 +47,13 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
     ## Apps
     ##
     Tailscale(app, "tailscale", config=config.tailscale)
+    Bitwarden(
+        app,
+        "bitwarden",
+        config=config.bitwarden,
+        cluster_issuer_name=issuer.cluster_issuer_name,
+        ingress_class_name=IngressNginx.INGRESS_CLASS_NAME,
+    )
 
     app.synth()
 
