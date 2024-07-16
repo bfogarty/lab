@@ -2,3 +2,4 @@ app: poetry run labcli k8s synth --config-file -
 language: python
 imports:
   - k8s@1.29.0
+  - https://github.com/cert-manager/cert-manager/releases/download/v1.15.1/cert-manager.crds.yaml

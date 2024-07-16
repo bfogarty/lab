@@ -6,8 +6,10 @@ from lab.libs.cli import make_typer
 
 from lab.charts import (
     CloudflareExternalDns,
+    CertManager,
     IngressNginx,
     Tailscale,
+    CloudflareAcmeIssuer,
 )
 from lab.libs.config import parse_config
 from lab.libs.exceptions import ConfigError
@@ -32,6 +34,13 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
     ##
     IngressNginx(app, "ingress-nginx", config.ingress)
     CloudflareExternalDns(app, "cloudflare-external-dns", config=config.cloudflare_dns)
+    CertManager(app, "cert-manager")
+    CloudflareAcmeIssuer(
+        app,
+        "cloudflare-acme-issuer",
+        config=config.cloudflare_acme_issuer,
+        acme_server=CloudflareAcmeIssuer.LETS_ENCRYPT,
+    )
 
     ##
     ## Apps
