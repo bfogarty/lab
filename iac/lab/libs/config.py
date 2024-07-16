@@ -1,9 +1,15 @@
 from typing import IO, Optional
-from pydantic import BaseModel, ValidationError, SecretStr
+from pydantic import BaseModel, ValidationError, SecretStr, IPvAnyNetwork
 
 from lab.libs.exceptions import ConfigError
 
 import yaml
+
+
+class CloudflareDnsConfig(BaseModel):
+    domain: str
+    api_token: SecretStr
+    local_network_cidr: IPvAnyNetwork
 
 
 class TailscaleClusterApiProxy(BaseModel):
@@ -22,6 +28,7 @@ class IngressConfig(BaseModel):
 
 class Config(BaseModel):
     tailscale: TailscaleConfig
+    cloudflare_dns: CloudflareDnsConfig
     ingress: IngressConfig
 
 

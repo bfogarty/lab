@@ -4,7 +4,11 @@ from rich import print
 import typer
 from lab.libs.cli import make_typer
 
-from lab.charts import IngressNginx, Tailscale
+from lab.charts import (
+    CloudflareExternalDns,
+    IngressNginx,
+    Tailscale,
+)
 from lab.libs.config import parse_config
 from lab.libs.exceptions import ConfigError
 
@@ -27,6 +31,7 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
     ## Cluster Services
     ##
     IngressNginx(app, "ingress-nginx", config.ingress)
+    CloudflareExternalDns(app, "cloudflare-external-dns", config=config.cloudflare_dns)
 
     ##
     ## Apps
