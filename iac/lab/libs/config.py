@@ -16,8 +16,13 @@ class TailscaleConfig(BaseModel):
     cluster_api_proxy: Optional[TailscaleClusterApiProxy] = None
 
 
+class IngressConfig(BaseModel):
+    oci_public_load_balancer_nsg_ocid: str
+
+
 class Config(BaseModel):
     tailscale: TailscaleConfig
+    ingress: IngressConfig
 
 
 def parse_config(raw_config: IO) -> Config:
