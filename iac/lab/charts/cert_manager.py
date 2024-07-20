@@ -31,6 +31,8 @@ class CloudflareAcmeIssuer(Chart):
     LETS_ENCRYPT = "https://acme-v02.api.letsencrypt.org/directory"
     LETS_ENCRYPT_STAGING = "https://acme-staging-v02.api.letsencrypt.org/directory"
 
+    API_TOKEN_SECRET_KEY = "api-token"
+
     def __init__(
         self,
         scope: Construct,
@@ -44,15 +46,15 @@ class CloudflareAcmeIssuer(Chart):
         ##
         ## Secret
         ##
-        secret_key = "api-token"
-
         secret = kplus.Secret(
             self,
             f"{id_}-secret",
             metadata=ApiObjectMetadata(
                 namespace=CertManager.NAMESPACE,
             ),
-            string_data={secret_key: config.api_token.get_secret_value()},
+            string_data={
+                CloudflareAcmeIssuer.API_TOKEN_SECRET_KEY: config.api_token.get_secret_value()
+            },
         )
 
         ##
@@ -63,7 +65,7 @@ class CloudflareAcmeIssuer(Chart):
                 cloudflare=cm.ClusterIssuerSpecAcmeSolversDns01Cloudflare(
                     api_token_secret_ref=cm.ClusterIssuerSpecAcmeSolversDns01CloudflareApiTokenSecretRef(
                         name=secret.name,
-                        key=secret_key,
+                        key=CloudflareAcmeIssuer.API_TOKEN_SECRET_KEY,
                     ),
                 ),
             ),
