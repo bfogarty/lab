@@ -24,6 +24,21 @@ class KubernetesCluster(Construct):
     ):
         super().__init__(scope, id_)
 
+        public_load_balancer_rules = {
+            "Allow TCP ingress to public load balancers for HTTPS traffic from anywhere": {
+                "protocol": 6,
+                "port": 443,
+                "source": "0.0.0.0/0",
+                "source_type": "CIDR_BLOCK",
+            },
+            "Allow TCP ingress to public load balancers for HTTP traffic from anywhere": {
+                "protocol": 6,
+                "port": 80,
+                "source": "0.0.0.0/0",
+                "source_type": "CIDR_BLOCK",
+            },
+        }
+
         # module pinned below < 5.1.1 to work around bug disabling operator
         # where subnets and security groups are still created
         Oke(
@@ -46,6 +61,7 @@ class KubernetesCluster(Construct):
                     "boot_volume_size": 50,
                 },
             },
+            allow_rules_public_lb=public_load_balancer_rules,
             worker_image_type="custom",
             worker_image_id=KubernetesCluster.PINNED_WORKER_IMAGE,
             providers=[
