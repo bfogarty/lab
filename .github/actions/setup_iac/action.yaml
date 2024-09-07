@@ -60,6 +60,6 @@ runs:
     - name: Generate module and provider code
       run: |
         cdktf get
-        cdk8s get
+        cdk8s import
       shell: bash
       working-directory: iac
