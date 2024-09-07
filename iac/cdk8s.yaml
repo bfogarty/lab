@@ -1,4 +1,4 @@
-app: poetry run labcli k8s synth
+app: poetry run labcli k8s synth --config-file -
 language: python
 imports:
   - k8s@1.29.0
