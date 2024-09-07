@@ -6,6 +6,8 @@ inputs:
     default: 1.8.3
   cdktf-cli-version:
     default: ^0.20.5
+  cdk8s-cli-version:
+    default: ^2.198.210
 runs:
   using: composite
   steps:
@@ -25,8 +27,11 @@ runs:
         # packages, so we bust the cache if this action changes
         cache-dependency-path: .github/actions/setup_iac/action.yaml
 
-    - name: Install cdktf-cli
-      run: npm install -g cdktf-cli@${{ inputs.cdktf-cli-version }}
+    - name: Install CLIs
+      run: |
+        npm install -g \
+          cdktf-cli@${{ inputs.cdktf-cli-version }} \
+          cdk8s-cli@${{ inputs.cdk8s-cli-version }}
       shell: bash
 
     - name: Install poetry
@@ -48,11 +53,13 @@ runs:
       uses: actions/cache@v3
       with:
         path: iac/imports
-        key: ${{ runner.os }}-tf-imports-${{ hashFiles('iac/cdktf.json') }}
+        key: ${{ runner.os }}-tf-imports-${{ hashFiles('iac/cdktf.json','iac/cdk8s.yaml') }}
         restore-keys: |
           ${{ runner.os }}-tf-imports-
 
     - name: Generate module and provider code
-      run: cdktf get
+      run: |
+        cdktf get
+        cdk8s import
       shell: bash
       working-directory: iac
