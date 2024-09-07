@@ -13,6 +13,7 @@ class GrafanaServiceConfig(BaseModel):
 
 
 class GrafanaConfig(BaseModel):
+    cluster_name: str
     access_policy_token: SecretStr
     loki: GrafanaServiceConfig
     prometheus: GrafanaServiceConfig
