@@ -11,7 +11,6 @@ from lab.libs.config import BitwardenConfig, BitwardenSmtpConfig
 from tests.utils import get_resource
 
 
-
 CONFIG = BitwardenConfig(
     admin_token=SecretStr("bw-example-token"),
     domain="https://example.com",
@@ -199,7 +198,7 @@ class TestBitwarden:
 
         container_ports = sorted(x["containerPort"] for x in container["ports"])
         service_target_ports = sorted(x["targetPort"] for x in service["spec"]["ports"])
-        service_ports =  sorted(x["port"] for x in service["spec"]["ports"])
+        service_ports = sorted(x["port"] for x in service["spec"]["ports"])
 
         # each container port is targeted, and only once
         assert container_ports == service_target_ports
