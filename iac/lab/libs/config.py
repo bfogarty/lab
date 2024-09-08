@@ -7,6 +7,18 @@ from lab.libs.exceptions import ConfigError
 import yaml
 
 
+class GrafanaServiceConfig(BaseModel):
+    host: str
+    username: str
+
+
+class GrafanaConfig(BaseModel):
+    cluster_name: str
+    access_policy_token: SecretStr
+    loki: GrafanaServiceConfig
+    prometheus: GrafanaServiceConfig
+
+
 class CloudflareAcmeIssuerConfig(BaseModel):
     email: str
     api_token: SecretStr
@@ -56,6 +68,7 @@ class Config(BaseModel):
     tailscale: TailscaleConfig
     cloudflare_acme_issuer: CloudflareAcmeIssuerConfig
     cloudflare_dns: CloudflareDnsConfig
+    grafana: GrafanaConfig
     ingress: IngressConfig
 
 

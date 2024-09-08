@@ -8,6 +8,7 @@ from lab.charts import (
     Bitwarden,
     CloudflareExternalDns,
     CertManager,
+    GrafanaAlloy,
     IngressNginx,
     Tailscale,
     CloudflareAcmeIssuer,
@@ -42,6 +43,7 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
         config=config.cloudflare_acme_issuer,
         acme_server=CloudflareAcmeIssuer.LETS_ENCRYPT,
     )
+    GrafanaAlloy(app, "grafana-alloy", config=config.grafana)
 
     ##
     ## Apps
