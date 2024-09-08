@@ -22,19 +22,13 @@ class TestGrafanaAlloy:
     @pytest.fixture(scope="class")
     def chart(self) -> Generator[list[Any], None, None]:
         yield GrafanaAlloy(
-            cdk8s.Testing.app(),
-            "grafana-alloy",
-            config=CONFIG
+            cdk8s.Testing.app(), "grafana-alloy", config=CONFIG
         ).to_json()
 
     @pytest.fixture
     def mocked_helm(self) -> Generator[Mock, None, None]:
         with patch("lab.charts.grafana.Helm", autospec=True) as m:
-            GrafanaAlloy(
-                cdk8s.Testing.app(),
-                "grafana-alloy",
-                config=CONFIG
-            ).to_json()
+            GrafanaAlloy(cdk8s.Testing.app(), "grafana-alloy", config=CONFIG).to_json()
 
             yield m
 
@@ -54,20 +48,21 @@ class TestGrafanaAlloy:
     def test_helm_resources_are_namespaced(self, chart: list[Any]) -> None:
         assert all(
             x["metadata"]["namespace"] == GrafanaAlloy.NAMESPACE
-            for x in chart if x["kind"] != "Namespace"
+            for x in chart
+            if x["kind"] != "Namespace"
         )
 
     def test_helm_skip_hooks_and_tests(self, chart: list[Any]) -> None:
         assert all(
-            "helm.sh/hook" not in x["metadata"].get("annotations", {})
-            for x in chart
+            "helm.sh/hook" not in x["metadata"].get("annotations", {}) for x in chart
         )
 
     def test_cluster_id(self, mocked_helm: Mock) -> None:
         values = mocked_helm.call_args.kwargs["values"]
         assert {"name": CONFIG.cluster_name} == values["cluster"]
-        assert {"defaultClusterId": CONFIG.cluster_name} == values["opencost"]["opencost"]["exporter"]
-
+        assert {"defaultClusterId": CONFIG.cluster_name} == values["opencost"][
+            "opencost"
+        ]["exporter"]
 
     def test_hosts_and_credentials(self, mocked_helm: Mock) -> None:
         values = mocked_helm.call_args.kwargs["values"]
@@ -77,21 +72,21 @@ class TestGrafanaAlloy:
                 "host": CONFIG.prometheus.host,
                 "basicAuth": {
                     "username": CONFIG.prometheus.username,
-                    "password": CONFIG.access_policy_token.get_secret_value()
-                }
+                    "password": CONFIG.access_policy_token.get_secret_value(),
+                },
             },
             "loki": {
                 "host": CONFIG.loki.host,
                 "basicAuth": {
                     "username": CONFIG.loki.username,
-                    "password": CONFIG.access_policy_token.get_secret_value()
-                }
-            }
+                    "password": CONFIG.access_policy_token.get_secret_value(),
+                },
+            },
         } == values["externalServices"]
 
-        assert {
-            "external": {"url": f"{CONFIG.prometheus.host}/api/prom"}
-        } == values["opencost"]["opencost"]["prometheus"]
+        assert {"external": {"url": f"{CONFIG.prometheus.host}/api/prom"}} == values[
+            "opencost"
+        ]["opencost"]["prometheus"]
 
     def test_enabled_features(self, mocked_helm: Mock) -> None:
         values = mocked_helm.call_args.kwargs["values"]
