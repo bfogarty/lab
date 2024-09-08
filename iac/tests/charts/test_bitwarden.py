@@ -10,7 +10,6 @@ import cdk8s
 from lab.libs.config import BitwardenConfig, BitwardenSmtpConfig
 from tests.utils import get_resource
 
-import cdk8s_plus_29 as kplus
 
 
 CONFIG = BitwardenConfig(
