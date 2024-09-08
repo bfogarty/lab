@@ -7,6 +7,12 @@ from lab.libs.exceptions import ConfigError
 import yaml
 
 
+class CloudflareAcmeIssuerConfig(BaseModel):
+    email: str
+    api_token: SecretStr
+    dns_zones: list[str]
+
+
 class CloudflareDnsConfig(BaseModel):
     domain: str
     api_token: SecretStr
@@ -29,6 +35,7 @@ class IngressConfig(BaseModel):
 
 class Config(BaseModel):
     tailscale: TailscaleConfig
+    cloudflare_acme_issuer: CloudflareAcmeIssuerConfig
     cloudflare_dns: CloudflareDnsConfig
     ingress: IngressConfig
 
