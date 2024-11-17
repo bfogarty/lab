@@ -7,7 +7,7 @@ from lab.libs.config import BitwardenConfig
 
 
 class Bitwarden(Chart):
-    VERSION = "1.32.0"
+    VERSION = "1.32.4"
 
     def __init__(
         self,
