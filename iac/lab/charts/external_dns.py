@@ -6,7 +6,7 @@ import cdk8s_plus_29 as kplus
 
 
 class CloudflareExternalDns(Chart):
-    VERSION = "0.14.2"
+    VERSION = "0.18.0"
 
     def __init__(self, scope: Construct, id_: str, *, config: CloudflareDnsConfig):
         super().__init__(scope, id_)
@@ -32,7 +32,7 @@ class CloudflareExternalDns(Chart):
         role.allow(
             ["get", "watch", "list"],
             kplus.ApiResource.SERVICES,
-            kplus.ApiResource.ENDPOINTS,
+            kplus.ApiResource.ENDPOINT_SLICES,
             kplus.ApiResource.PODS,
             kplus.ApiResource.INGRESSES,
         )
