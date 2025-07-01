@@ -52,7 +52,7 @@ class TestCloudflareExternalDns:
         "resource",
         [
             kplus.ApiResource.SERVICES,
-            kplus.ApiResource.ENDPOINTS,
+            kplus.ApiResource.ENDPOINT_SLICES,
             kplus.ApiResource.PODS,
             kplus.ApiResource.INGRESSES,
         ],
