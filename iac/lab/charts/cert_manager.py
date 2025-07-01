@@ -11,7 +11,7 @@ import cdk8s_plus_29 as kplus
 
 class CertManager(Chart):
     # must also update CRD version in cdk8s.yaml
-    VERSION = "1.15.1"
+    VERSION = "1.18.1"
 
     NAMESPACE = "cert-manager"
 
