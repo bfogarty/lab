@@ -9,6 +9,7 @@ from lab.charts import (
     CloudflareExternalDns,
     CertManager,
     GrafanaAlloy,
+    GrafanaAlloyCrd,
     IngressNginx,
     Tailscale,
     CloudflareAcmeIssuer,
@@ -43,6 +44,7 @@ def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
         config=config.cloudflare_acme_issuer,
         acme_server=CloudflareAcmeIssuer.LETS_ENCRYPT,
     )
+    GrafanaAlloyCrd(app, "grafana-alloy-crd")
     GrafanaAlloy(app, "grafana-alloy", config=config.grafana)
 
     ##
