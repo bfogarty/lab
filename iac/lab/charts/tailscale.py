@@ -50,7 +50,7 @@ def _configure_api_proxy(
 
 
 class Tailscale(Chart):
-    OPERATOR_VERSION = "1.68.1"
+    OPERATOR_VERSION = "1.84.2"
 
     MANIFEST_BASE_URL = f"https://raw.githubusercontent.com/tailscale/tailscale/v{OPERATOR_VERSION}/cmd/k8s-operator/deploy/manifests"
 
