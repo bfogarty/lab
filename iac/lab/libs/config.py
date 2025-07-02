@@ -17,6 +17,7 @@ class GrafanaConfig(BaseModel):
     access_policy_token: SecretStr
     loki: GrafanaServiceConfig
     prometheus: GrafanaServiceConfig
+    remote_config: GrafanaServiceConfig
 
 
 class CloudflareAcmeIssuerConfig(BaseModel):
