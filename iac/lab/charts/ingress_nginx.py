@@ -8,7 +8,7 @@ from lab.libs.k8s.api_object import patch_obj
 
 
 class IngressNginx(Chart):
-    VERSION = "1.10.1"
+    VERSION = "1.12.1"
 
     INGRESS_CLASS_NAME = "nginx"
 
@@ -33,6 +33,11 @@ class IngressNginx(Chart):
                 "could not find service/ingress-nginx-controller in ingress-nginx manifest"
             )
 
+        if svc.to_json().get("metadata", {}).get("annotations"):
+            raise LabError(
+                "Service has annotations, may be overriding default values"
+            )
+
         patch_obj(
             svc,
             "/metadata/annotations",
@@ -52,4 +57,13 @@ class IngressNginx(Chart):
                 "could not find configmap/ingress-nginx-controller in ingress-nginx manifest"
             )
 
-        patch_obj(cfg, "/data/allow-snippet-annotations", "true")
+        if cfg.to_json().get("data"):
+            raise LabError(
+                "ConfigMap is not empty, may be overriding default values"
+            )
+
+        patch_obj(cfg, "/data", {
+            "allow-snippet-annotations": "true",
+            # we trust the users creating Ingress objects
+            "annotations-risk-level": "Critical",
+        })
