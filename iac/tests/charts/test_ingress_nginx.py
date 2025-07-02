@@ -14,6 +14,7 @@ CONFIG = IngressConfig(
     oci_public_load_balancer_nsg_ocid="ocid",
 )
 
+
 class TestIngressNginx:
     @pytest.fixture(scope="class")
     def chart(self) -> Generator[list[Any], None, None]:
@@ -39,7 +40,9 @@ class TestIngressNginx:
         assert "Critical" == cfg["data"]["annotations-risk-level"]
 
     @patch("cdk8s.ApiObject.to_json")
-    def test_cannot_override_default_service_annotations(self, mocked_to_json: Mock) -> None:
+    def test_cannot_override_default_service_annotations(
+        self, mocked_to_json: Mock
+    ) -> None:
         mocked_to_json.return_value = {
             "metadata": {
                 "annotations": {"foo": "bar"},

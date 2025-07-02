@@ -34,9 +34,7 @@ class IngressNginx(Chart):
             )
 
         if svc.to_json().get("metadata", {}).get("annotations"):
-            raise LabError(
-                "Service has annotations, may be overriding default values"
-            )
+            raise LabError("Service has annotations, may be overriding default values")
 
         patch_obj(
             svc,
@@ -58,12 +56,14 @@ class IngressNginx(Chart):
             )
 
         if cfg.to_json().get("data"):
-            raise LabError(
-                "ConfigMap is not empty, may be overriding default values"
-            )
+            raise LabError("ConfigMap is not empty, may be overriding default values")
 
-        patch_obj(cfg, "/data", {
-            "allow-snippet-annotations": "true",
-            # we trust the users creating Ingress objects
-            "annotations-risk-level": "Critical",
-        })
+        patch_obj(
+            cfg,
+            "/data",
+            {
+                "allow-snippet-annotations": "true",
+                # we trust the users creating Ingress objects
+                "annotations-risk-level": "Critical",
+            },
+        )
