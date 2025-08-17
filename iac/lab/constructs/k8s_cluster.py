@@ -7,10 +7,11 @@ from imports.oci.provider import OciProvider
 
 
 class KubernetesCluster(Construct):
-    VERSION = "v1.29.1"
+    CONTROL_PLANE_VERSION = "v1.30.10"
+    WORKER_NODE_VERSION = "v1.30.10"
 
     # control upgrades to workers by pinning the image
-    PINNED_WORKER_IMAGE = "ocid1.image.oc1.iad.aaaaaaaahlop3h45zzpfcjdrmzqg3yebrnsdrblicwyr57jb4o7f6pxhu7dq"
+    PINNED_WORKER_IMAGE = "ocid1.image.oc1.iad.aaaaaaaalyoeitqqpnuh5amzx7sfcw7ffz4m2xmmvqysnvjoekm676pmbbyq"
 
     def __init__(
         self,
@@ -43,7 +44,7 @@ class KubernetesCluster(Construct):
             self,
             f"cluster-{name}",
             cluster_name=name,
-            kubernetes_version=KubernetesCluster.VERSION,
+            kubernetes_version=KubernetesCluster.CONTROL_PLANE_VERSION,
             tenancy_id=tenancy_id,
             compartment_id=compartment_id,
             control_plane_is_public=True,
@@ -57,6 +58,7 @@ class KubernetesCluster(Construct):
                     "ocpus": 2,
                     "memory": 12,
                     "boot_volume_size": 50,
+                    "kubernetes_version": KubernetesCluster.WORKER_NODE_VERSION,
                 },
             },
             allow_rules_public_lb=public_load_balancer_rules,
