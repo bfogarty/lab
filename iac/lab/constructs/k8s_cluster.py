@@ -7,10 +7,11 @@ from imports.oci.provider import OciProvider
 
 
 class KubernetesCluster(Construct):
-    VERSION = "v1.29.1"
+    CONTROL_PLANE_VERSION = "v1.30.10"
+    WORKER_NODE_VERSION = "v1.30.10"
 
     # control upgrades to workers by pinning the image
-    PINNED_WORKER_IMAGE = "ocid1.image.oc1.iad.aaaaaaaahlop3h45zzpfcjdrmzqg3yebrnsdrblicwyr57jb4o7f6pxhu7dq"
+    PINNED_WORKER_IMAGE = "ocid1.image.oc1.iad.aaaaaaaalyoeitqqpnuh5amzx7sfcw7ffz4m2xmmvqysnvjoekm676pmbbyq"
 
     def __init__(
         self,
@@ -39,13 +40,11 @@ class KubernetesCluster(Construct):
             },
         }
 
-        # module pinned below < 5.1.1 to work around bug disabling operator
-        # where subnets and security groups are still created
         Oke(
             self,
             f"cluster-{name}",
             cluster_name=name,
-            kubernetes_version=KubernetesCluster.VERSION,
+            kubernetes_version=KubernetesCluster.CONTROL_PLANE_VERSION,
             tenancy_id=tenancy_id,
             compartment_id=compartment_id,
             control_plane_is_public=True,
@@ -59,6 +58,7 @@ class KubernetesCluster(Construct):
                     "ocpus": 2,
                     "memory": 12,
                     "boot_volume_size": 50,
+                    "kubernetes_version": KubernetesCluster.WORKER_NODE_VERSION,
                 },
             },
             allow_rules_public_lb=public_load_balancer_rules,
@@ -67,4 +67,25 @@ class KubernetesCluster(Construct):
             providers=[
                 TerraformModuleProvider(module_alias="home", provider=oci_provider)
             ],
+            # bug in module version >= 5.1.1: when disabling operator, subnets
+            # and security groups are still created. here we override the
+            # operator to create = "never" while keeping defaults for the rest
+            nsgs={
+                "bastion": {},
+                "operator": {"create": "never"},
+                "cp": {},
+                "int_lb": {},
+                "pub_lb": {},
+                "workers": {},
+                "pods": {},
+            },
+            subnets={
+                "bastion": {"newbits": 13, "ipv6_cidr": "8, 0"},
+                "operator": {"create": "never"},
+                "cp": {"newbits": 13, "ipv6_cidr": "8, 2"},
+                "int_lb": {"newbits": 11, "ipv6_cidr": "8, 3"},
+                "pub_lb": {"newbits": 11, "ipv6_cidr": "8, 4"},
+                "workers": {"newbits": 4, "ipv6_cidr": "8, 5"},
+                "pods": {"newbits": 2, "ipv6_cidr": "8, 6"},
+            },
         )
