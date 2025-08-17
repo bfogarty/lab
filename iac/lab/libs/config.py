@@ -50,6 +50,49 @@ class BitwardenConfig(BaseModel):
     icon_blacklist_regex: str = ""
 
 
+class InboxZeroDatabaseConfig(BaseModel):
+    url: SecretStr
+    direct_url: SecretStr
+
+class InboxZeroGoogleConfig(BaseModel):
+    client_id: str
+    client_secret: SecretStr
+    encrypt_secret: SecretStr
+    encrypt_salt: SecretStr
+    pubsub_verification_token: SecretStr
+    pubsub_topic_name: str
+
+class InboxZeroQStashConfig(BaseModel):
+    token: SecretStr
+    current_signing_key: SecretStr
+    next_signing_key: SecretStr
+
+class InboxZeroRedisConfig(BaseModel):
+    url: SecretStr
+    upstash_token: SecretStr
+    upstash_url: str
+
+class InboxZeroAuthConfig(BaseModel):
+    nextauth_secret: SecretStr
+    nextauth_url: str
+
+class InboxZeroLLMConfig(BaseModel):
+    default_provider: str
+    default_model: str
+    openai_api_key: SecretStr
+
+class InboxZeroConfig(BaseModel):
+    database: InboxZeroDatabaseConfig
+    google: InboxZeroGoogleConfig
+    qstash: InboxZeroQStashConfig
+    redis: InboxZeroRedisConfig
+    auth: InboxZeroAuthConfig
+    llm: InboxZeroLLMConfig
+    internal_api_key: SecretStr
+    api_key_salt: SecretStr
+    admins: str
+
+
 class TailscaleClusterApiProxy(BaseModel):
     cluster_admins: list[str] = []
 
@@ -71,6 +114,7 @@ class Config(BaseModel):
     cloudflare_dns: CloudflareDnsConfig
     grafana: GrafanaConfig
     ingress: IngressConfig
+    inbox_zero_config: InboxZeroConfig
 
 
 def parse_config(raw_config: IO) -> Config:
