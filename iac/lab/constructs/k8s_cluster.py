@@ -39,8 +39,6 @@ class KubernetesCluster(Construct):
             },
         }
 
-        # module pinned below < 5.1.1 to work around bug disabling operator
-        # where subnets and security groups are still created
         Oke(
             self,
             f"cluster-{name}",
@@ -67,4 +65,25 @@ class KubernetesCluster(Construct):
             providers=[
                 TerraformModuleProvider(module_alias="home", provider=oci_provider)
             ],
+            # bug in module version >= 5.1.1: when disabling operator, subnets
+            # and security groups are still created. here we override the
+            # operator to create = "never" while keeping defaults for the rest
+            nsgs={
+              "bastion": {},
+              "operator": {"create": "never"},
+              "cp": {},
+              "int_lb": {},
+              "pub_lb": {},
+              "workers": {},
+              "pods": {},
+            },
+            subnets={
+                "bastion": { "newbits": 13, "ipv6_cidr": "8, 0" },
+                "operator": { "create": "never" },
+                "cp": { "newbits": 13, "ipv6_cidr": "8, 2" },
+                "int_lb": { "newbits": 11, "ipv6_cidr": "8, 3" },
+                "pub_lb": { "newbits": 11, "ipv6_cidr": "8, 4" },
+                "workers": { "newbits": 4, "ipv6_cidr": "8, 5" },
+                "pods": { "newbits": 2, "ipv6_cidr": "8, 6" },
+            },
         )
