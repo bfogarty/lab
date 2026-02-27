@@ -1,7 +1,7 @@
 name: Setup IAC project
 inputs:
   python-version:
-    default: 3.11
+    default: 3.13
   terraform-version:
     default: 1.8.3
   cdktf-cli-version:
