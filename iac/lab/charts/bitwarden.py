@@ -50,7 +50,7 @@ class Bitwarden(Chart):
                 "SMTP_FROM": config.smtp.from_email,
                 "SMTP_FROM_NAME": config.smtp.from_name,
                 "SMTP_PORT": str(config.smtp.port),
-                "SMTP_EXPLICIT_TLS": str(config.smtp.use_explicit_tls).lower(),
+                "SMTP_SECURITY": config.smtp.security,
                 "SMTP_USERNAME": config.smtp.username,
             },
         )
@@ -72,6 +72,7 @@ class Bitwarden(Chart):
             self,
             id_,
             replicas=1,
+            strategy=kplus.DeploymentStrategy.recreate()
         )
 
         main_container = deployment.add_container(

@@ -1,5 +1,5 @@
 from ipaddress import IPv4Network
-from typing import IO, Optional
+from typing import IO, Literal, Optional
 from pydantic import BaseModel, ValidationError, SecretStr
 
 from lab.libs.exceptions import ConfigError
@@ -37,7 +37,7 @@ class BitwardenSmtpConfig(BaseModel):
     port: int
     username: str
     password: SecretStr
-    use_explicit_tls: bool = True
+    security: Literal["starttls", "off", "force_tls"]
     from_email: str
     from_name: str
 
