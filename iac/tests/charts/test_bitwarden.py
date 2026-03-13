@@ -23,7 +23,7 @@ CONFIG = BitwardenConfig(
         password=SecretStr("example-smtp-pass"),
         from_email="admin@example.com",
         from_name="Example Org",
-        use_explicit_tls=True,
+        security="force_tls",
     ),
 )
 
@@ -64,7 +64,7 @@ class TestBitwarden:
             "INVITATION_ORG_NAME": CONFIG.organization_name,
             "SHOW_PASSWORD_HINT": "false",
             "SIGNUPS_ALLOWED": "false",
-            "SMTP_EXPLICIT_TLS": "true" if CONFIG.smtp.use_explicit_tls else "false",
+            "SMTP_SECURITY": CONFIG.smtp.security,
             "SMTP_FROM": CONFIG.smtp.from_email,
             "SMTP_FROM_NAME": CONFIG.smtp.from_name,
             "SMTP_HOST": CONFIG.smtp.host,
