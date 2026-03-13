@@ -69,10 +69,7 @@ class Bitwarden(Chart):
         ## Deployment
         ##
         deployment = kplus.Deployment(
-            self,
-            id_,
-            replicas=1,
-            strategy=kplus.DeploymentStrategy.recreate()
+            self, id_, replicas=1, strategy=kplus.DeploymentStrategy.recreate()
         )
 
         main_container = deployment.add_container(
