@@ -7,7 +7,7 @@ from lab.libs.config import BitwardenConfig
 
 
 class Bitwarden(Chart):
-    VERSION = "1.34.1"
+    VERSION = "1.35.4"
 
     def __init__(
         self,
@@ -50,7 +50,7 @@ class Bitwarden(Chart):
                 "SMTP_FROM": config.smtp.from_email,
                 "SMTP_FROM_NAME": config.smtp.from_name,
                 "SMTP_PORT": str(config.smtp.port),
-                "SMTP_EXPLICIT_TLS": str(config.smtp.use_explicit_tls).lower(),
+                "SMTP_SECURITY": config.smtp.security,
                 "SMTP_USERNAME": config.smtp.username,
             },
         )
@@ -69,9 +69,7 @@ class Bitwarden(Chart):
         ## Deployment
         ##
         deployment = kplus.Deployment(
-            self,
-            id_,
-            replicas=1,
+            self, id_, replicas=1, strategy=kplus.DeploymentStrategy.recreate()
         )
 
         main_container = deployment.add_container(
