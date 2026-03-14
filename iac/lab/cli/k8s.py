@@ -1,19 +1,11 @@
+from enum import StrEnum
 from typing import Annotated
 
 from rich import print
 import typer
 from lab.libs.cli import make_typer
 
-from lab.charts import (
-    Bitwarden,
-    CloudflareExternalDns,
-    CertManager,
-    GrafanaAlloy,
-    GrafanaAlloyCrd,
-    IngressNginx,
-    Tailscale,
-    CloudflareAcmeIssuer,
-)
+from lab.clusters import BaseCluster, K3sCluster, OkeCluster
 from lab.libs.config import parse_config
 from lab.libs.exceptions import ConfigError
 
@@ -22,42 +14,32 @@ from cdk8s import App
 cli = make_typer()
 
 
+class ClusterName(StrEnum):
+    OKE = "oke"
+    K3S = "k3s"
+
+
+_clusters: dict[ClusterName, type[BaseCluster]] = {
+    ClusterName.OKE: OkeCluster,
+    ClusterName.K3S: K3sCluster,
+}
+
+
 @cli.command()
-def synth(config_file: Annotated[typer.FileText, typer.Option()]) -> None:
+def synth(
+    config_file: Annotated[typer.FileText, typer.Option()],
+    cluster_name: Annotated[ClusterName, typer.Option()],
+) -> None:
+    cluster_cls = _clusters[cluster_name]
     app = App()
 
     try:
-        config = parse_config(config_file)
+        config = parse_config(config_file, cluster_cls.config_class)
     except ConfigError as e:
         print(f"[red]{e}[/red]")
         raise typer.Exit(1) from e
 
-    ##
-    ## Cluster Services
-    ##
-    IngressNginx(app, "ingress-nginx", config.ingress)
-    CloudflareExternalDns(app, "cloudflare-external-dns", config=config.cloudflare_dns)
-    CertManager(app, "cert-manager")
-    issuer = CloudflareAcmeIssuer(
-        app,
-        "cloudflare-acme-issuer",
-        config=config.cloudflare_acme_issuer,
-        acme_server=CloudflareAcmeIssuer.LETS_ENCRYPT,
-    )
-    GrafanaAlloyCrd(app, "grafana-alloy-crd")
-    GrafanaAlloy(app, "grafana-alloy", config=config.grafana)
-
-    ##
-    ## Apps
-    ##
-    Tailscale(app, "tailscale", config=config.tailscale)
-    Bitwarden(
-        app,
-        "bitwarden",
-        config=config.bitwarden,
-        cluster_issuer_name=issuer.cluster_issuer_name,
-        ingress_class_name=IngressNginx.INGRESS_CLASS_NAME,
-    )
+    cluster_cls(app, config)
 
     app.synth()
 
