@@ -80,7 +80,7 @@ class OkeClusterConfig(BaseModel):
 class K3sClusterConfig(BaseModel):
     """Top-level configuration for the k3s cluster."""
 
-    pass
+    tailscale: TailscaleConfig
 
 
 def parse_config(raw_config: IO, model: type[T]) -> T:
