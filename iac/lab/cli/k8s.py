@@ -13,14 +13,17 @@ from cdk8s import App
 
 cli = make_typer()
 
+
 class ClusterName(StrEnum):
     OKE = "oke"
     K3S = "k3s"
+
 
 _clusters: dict[ClusterName, type[BaseCluster]] = {
     ClusterName.OKE: OkeCluster,
     ClusterName.K3S: K3sCluster,
 }
+
 
 @cli.command()
 def synth(
