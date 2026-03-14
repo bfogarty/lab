@@ -5,6 +5,6 @@ from lab.libs.config import K3sClusterConfig
 
 
 class TestK3sCluster:
-    def test_synthesizes_without_error(self) -> None:
+    def test_initializes_without_error(self) -> None:
         app = cdk8s.Testing.app()
         K3sCluster(app, K3sClusterConfig())

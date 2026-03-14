@@ -29,6 +29,7 @@ CONFIG = OkeClusterConfig(
             password=SecretStr("smtp-pass"),
             from_email="admin@example.com",
             from_name="Example Org",
+            security="force_tls",
         ),
     ),
     tailscale=TailscaleConfig(
@@ -59,6 +60,6 @@ CONFIG = OkeClusterConfig(
 
 
 class TestOkeCluster:
-    def test_synthesizes_without_error(self) -> None:
+    def test_initializes_without_error(self) -> None:
         app = cdk8s.Testing.app()
         OkeCluster(app, CONFIG)
