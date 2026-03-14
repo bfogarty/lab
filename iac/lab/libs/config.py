@@ -1,10 +1,12 @@
 from ipaddress import IPv4Network
-from typing import IO, Literal, Optional
+from typing import IO, Literal, Optional, TypeVar
 from pydantic import BaseModel, ValidationError, SecretStr
 
 from lab.libs.exceptions import ConfigError
 
 import yaml
+
+T = TypeVar("T", bound=BaseModel)
 
 
 class GrafanaServiceConfig(BaseModel):
@@ -64,7 +66,9 @@ class IngressConfig(BaseModel):
     oci_public_load_balancer_nsg_ocid: str
 
 
-class Config(BaseModel):
+class OkeClusterConfig(BaseModel):
+    """Top-level configuration for the OKE cluster."""
+
     bitwarden: BitwardenConfig
     tailscale: TailscaleConfig
     cloudflare_acme_issuer: CloudflareAcmeIssuerConfig
@@ -73,9 +77,15 @@ class Config(BaseModel):
     ingress: IngressConfig
 
 
-def parse_config(raw_config: IO) -> Config:
+class K3sClusterConfig(BaseModel):
+    """Top-level configuration for the k3s cluster."""
+
+    pass
+
+
+def parse_config(raw_config: IO, model: type[T]) -> T:
     try:
-        return Config.model_validate(yaml.safe_load(raw_config))
+        return model.model_validate(yaml.safe_load(raw_config))
     except yaml.YAMLError as e:
         raise ConfigError(f"error parsing yaml: {e}") from e
     except ValidationError as e:
