@@ -69,3 +69,10 @@ class Lab(TerraformStack):
             name="brnfgrty.com",
             compartment_id=lab.id,
         ).repository.import_from("ocid1.containerrepo.oc1.iad.0.idzkli5izemj.aaaaaaaaox7fdqsjcnyrklyzilcs2rfbufnoxr4nwgw36ffvl65u7wuqn6kq")
+
+        PrivateContainerRepository(
+            self,
+            "flights-mcp",
+            name="flights-mcp",
+            compartment_id=lab.id,
+        )
