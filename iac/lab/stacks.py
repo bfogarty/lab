@@ -4,7 +4,7 @@ from cdktf import TerraformStack, TerraformVariable
 from imports.oci.provider import OciProvider
 from imports.oci.identity_compartment import IdentityCompartment
 
-from lab.constructs import Budget, KubernetesCluster
+from lab.constructs import Budget, KubernetesCluster, PrivateContainerRepository
 
 
 class Lab(TerraformStack):
@@ -61,4 +61,18 @@ class Lab(TerraformStack):
             oci_provider=oci,
             tenancy_id=tenancy_ocid.string_value,
             compartment_id=lab.compartment_id,
+        )
+
+        PrivateContainerRepository(
+            self,
+            "brnfgrty",
+            name="brnfgrty.com",
+            compartment_id=lab.id,
+        ).repository.import_from("ocid1.containerrepo.oc1.iad.0.idzkli5izemj.aaaaaaaaox7fdqsjcnyrklyzilcs2rfbufnoxr4nwgw36ffvl65u7wuqn6kq")
+
+        PrivateContainerRepository(
+            self,
+            "flights-mcp",
+            name="flights-mcp",
+            compartment_id=lab.id,
         )

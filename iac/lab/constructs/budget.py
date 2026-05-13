@@ -11,6 +11,8 @@ class Budget(Construct):
     Creates a monthly budget for an OCI Compartment.
 
     Args:
+        scope: The parent construct scope.
+        id_: The unique identifier for this construct.
         name: the display name of the budget
         compartment_id: the OCID of the compartment to budget
         amount: the total amount of the budget
