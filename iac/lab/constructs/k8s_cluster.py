@@ -7,6 +7,12 @@ from imports.oci.provider import OciProvider
 
 
 class KubernetesCluster(Construct):
+    """
+    An OKE cluster with OCI Ampere A1 (Arm) workers.
+
+    Sized to the former PAYG free tier allowance of 4 OCPU and 24 GB RAM.
+    """
+
     CONTROL_PLANE_VERSION = "v1.30.10"
     WORKER_NODE_VERSION = "v1.30.10"
 
