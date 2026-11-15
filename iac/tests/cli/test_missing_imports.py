@@ -60,5 +60,13 @@ class TestLabcliWithoutImports:
         )
 
         assert result.returncode == 0, result.stderr
-        assert "exit 1" in result.stdout
-        assert "cdktf get" in result.stdout
+        # The message wraps to the terminal width.
+        output = " ".join(result.stdout.split())
+        assert "exit 1" in output
+        assert "labcli sync-imports" in output
+
+
+def test_sync_imports_is_a_labcli_command() -> None:
+    from lab.__main__ import app
+
+    assert "sync-imports" in [command.name for command in app.registered_commands]
