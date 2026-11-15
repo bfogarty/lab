@@ -3,7 +3,7 @@ import typer
 
 from cdktf import App, CloudBackend, NamedCloudWorkspace
 
-from lab.stacks import Lab
+from lab.cli.sync_imports import missing_imports_hint
 from lab.libs.cli import make_typer, make_envvar
 
 cli = make_typer()
@@ -27,6 +27,10 @@ def synth(
     """
     Synthesizes this project to Terraform.
     """
+    # Requires the generated `imports` package, which may not exist yet.
+    with missing_imports_hint():
+        from lab.stacks import Lab
+
     app = App()
 
     stacks = [Lab(app, "lab")]
