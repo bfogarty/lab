@@ -20,8 +20,7 @@ Run all commands from `iac/`.
 
 ```
 poetry install
-cdktf get
-cdk8s import
+poetry run labcli sync-imports
 ```
 
 ### Lint and Test

@@ -2,8 +2,8 @@ from typing import Sequence
 
 from constructs import Construct
 
-from imports.oci.budget_budget import BudgetBudget as OciBudget
-from imports.oci.budget_alert_rule import BudgetAlertRule
+from lab.imports.oci.budget_budget import BudgetBudget as OciBudget
+from lab.imports.oci.budget_alert_rule import BudgetAlertRule
 
 
 class Budget(Construct):

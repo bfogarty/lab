@@ -32,13 +32,14 @@ class TestSyncImports:
         return calls
 
     @pytest.fixture
-    def output(self, tmp_path: Path) -> Path:
-        return tmp_path / "deploy" / "imports"
+    def output(self, iac_dir: Path) -> Path:
+        # Generated into the `lab.imports` package.
+        return iac_dir / "lab" / "imports"
 
-    def test_generates_into_output_from_the_pins_in_iac_dir(
+    def test_generates_into_the_package_from_the_pins(
         self, iac_dir: Path, run: list, output: Path
     ) -> None:
-        sync_imports(output=output, force=False)
+        sync_imports(force=False)
 
         assert run == [
             (["cdktf", "get", "--output", str(output)], iac_dir),
@@ -49,20 +50,20 @@ class TestSyncImports:
     def test_skips_when_pins_are_unchanged(
         self, iac_dir: Path, run: list, output: Path
     ) -> None:
-        sync_imports(output=output, force=False)
+        sync_imports(force=False)
         run.clear()
 
-        sync_imports(output=output, force=False)
+        sync_imports(force=False)
 
         assert run == []
 
     def test_force_regenerates_everything(
         self, iac_dir: Path, run: list, output: Path
     ) -> None:
-        sync_imports(output=output, force=False)
+        sync_imports(force=False)
         run.clear()
 
-        sync_imports(output=output, force=True)
+        sync_imports(force=True)
 
         assert [command for command, _ in run] == [
             ["cdktf", "get", "--output", str(output), "--force"],
@@ -72,11 +73,11 @@ class TestSyncImports:
     def test_regenerates_when_a_pin_changes(
         self, iac_dir: Path, run: list, output: Path
     ) -> None:
-        sync_imports(output=output, force=False)
+        sync_imports(force=False)
         run.clear()
 
         (iac_dir / "cdktf.json").write_text('{"terraformProviders": ["a/b@2"]}')
-        sync_imports(output=output, force=False)
+        sync_imports(force=False)
 
         assert len(run) == 2
 
@@ -87,14 +88,14 @@ class TestSyncImports:
         output: Path,
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        sync_imports(output=output, force=False)
+        sync_imports(force=False)
 
         def failing_run(command: list[str], cwd: Path, check: bool) -> None:
             raise subprocess.CalledProcessError(1, command)
 
         monkeypatch.setattr(sync_module.subprocess, "run", failing_run)
         with pytest.raises(typer.Exit):
-            sync_imports(output=output, force=True)
+            sync_imports(force=True)
 
         assert not (output / STAMP_FILE).exists()
 
@@ -108,6 +109,6 @@ class TestSyncImports:
         monkeypatch.setattr(sync_module.shutil, "which", lambda tool: None)
 
         with pytest.raises(typer.Exit):
-            sync_imports(output=output, force=False)
+            sync_imports(force=False)
 
         assert run == []

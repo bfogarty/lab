@@ -7,7 +7,7 @@ import typer
 from lab.cli.sync_imports import missing_imports_hint
 
 # Run in a subprocess with the generated package blocked.
-BLOCK_IMPORTS = "import sys; sys.modules['imports'] = None; "
+BLOCK_IMPORTS = "import sys; sys.modules['lab.imports'] = None; "
 
 
 def run_without_imports(code: str) -> subprocess.CompletedProcess[str]:
@@ -22,13 +22,22 @@ class TestMissingImportsHint:
     def test_turns_a_missing_imports_package_into_an_exit(self) -> None:
         with pytest.raises(typer.Exit):
             with missing_imports_hint():
-                raise ModuleNotFoundError("No module named 'imports'", name="imports")
+                raise ModuleNotFoundError(
+                    "No module named 'lab.imports'", name="lab.imports"
+                )
 
     def test_covers_submodules_of_imports(self) -> None:
         with pytest.raises(typer.Exit):
             with missing_imports_hint():
                 raise ModuleNotFoundError(
-                    "No module named 'imports.oci'", name="imports.oci"
+                    "No module named 'lab.imports.oci'", name="lab.imports.oci"
+                )
+
+    def test_leaves_lookalike_modules_alone(self) -> None:
+        with pytest.raises(ModuleNotFoundError):
+            with missing_imports_hint():
+                raise ModuleNotFoundError(
+                    "No module named 'lab.imports_other'", name="lab.imports_other"
                 )
 
     def test_leaves_other_missing_modules_alone(self) -> None:

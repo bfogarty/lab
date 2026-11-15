@@ -11,7 +11,7 @@ from rich import print
 
 from lab import PROJECT_DIR
 
-GENERATED_PACKAGE_NAME = "imports"
+GENERATED_PACKAGE_NAME = "lab.imports"
 
 LOCKFILES = ("cdktf.json", "cdk8s.yaml")
 
@@ -21,12 +21,15 @@ STAMP_FILE = ".labcli-imports-digest"
 @contextmanager
 def missing_imports_hint() -> Generator[None]:
     """
-    Wraps imports to the generated `imports` packages and prints on error.
+    Wraps imports of the generated package and prints on error.
     """
     try:
         yield
     except ModuleNotFoundError as e:
-        if (e.name or "").split(".")[0] != GENERATED_PACKAGE_NAME:
+        name = e.name or ""
+        if name != GENERATED_PACKAGE_NAME and not name.startswith(
+            f"{GENERATED_PACKAGE_NAME}."
+        ):
             raise
         print(
             f"[red]The generated `{GENERATED_PACKAGE_NAME}` package is missing. "
@@ -47,24 +50,17 @@ def inputs_digest(iac_dir: Path) -> str:
 
 
 def sync_imports(
-    output: Annotated[
-        Path,
-        typer.Option(
-            help="Directory to generate the `imports` package into, relative to the "
-            "current directory. It must be importable as `imports`."
-        ),
-    ] = Path("imports"),
     force: Annotated[
         bool,
         typer.Option("--force", help="Regenerate even if the imports look up to date."),
     ] = False,
 ) -> None:
     """
-    Generates or updates the cdktf and cdk8s `imports` package.
+    Generates or updates the cdktf and cdk8s `lab.imports` package.
 
     Requires `cdktf` and `cdk8s` on PATH.
     """
-    output = output.resolve()
+    output = PROJECT_DIR.joinpath(*GENERATED_PACKAGE_NAME.split("."))
     stamp = output / STAMP_FILE
     digest = inputs_digest(PROJECT_DIR)
 

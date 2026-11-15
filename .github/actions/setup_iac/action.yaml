@@ -52,14 +52,12 @@ runs:
     - name: Restore cached module and provider code
       uses: actions/cache@v3
       with:
-        path: iac/imports
+        path: iac/lab/imports
         key: ${{ runner.os }}-tf-imports-${{ hashFiles('iac/cdktf.json','iac/cdk8s.yaml') }}
         restore-keys: |
           ${{ runner.os }}-tf-imports-
 
     - name: Generate module and provider code
-      run: |
-        cdktf get
-        cdk8s import
+      run: poetry run labcli sync-imports
       shell: bash
       working-directory: iac
