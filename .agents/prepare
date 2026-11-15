@@ -1,0 +1,16 @@
+#!/bin/sh
+# Set up a new agent checkout.
+set -eu
+
+missing=""
+for tool in poetry terraform node cdktf cdk8s; do
+    command -v "$tool" >/dev/null 2>&1 || missing="$missing $tool"
+done
+if [ -n "$missing" ]; then
+    echo "prepare: not found on PATH:$missing" >&2
+    exit 1
+fi
+
+cd "$(dirname "$0")/../iac"
+poetry install
+poetry run labcli sync-imports
