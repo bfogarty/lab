@@ -2,8 +2,8 @@ from cdktf import TerraformModuleProvider
 
 from constructs import Construct
 
-from imports.oke import Oke
-from imports.oci.provider import OciProvider
+from lab.imports.oke import Oke
+from lab.imports.oci.provider import OciProvider
 
 
 class KubernetesCluster(Construct):

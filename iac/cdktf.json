@@ -11,6 +11,6 @@
       "source": "oracle-terraform-modules/oke/oci",
       "version": "~> 5.1.9"
   }],
-  "codeMakerOutput": "imports",
+  "codeMakerOutput": "lab/imports",
   "context": {}
 }

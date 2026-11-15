@@ -1,8 +1,8 @@
 from constructs import Construct
 from cdktf import TerraformStack, TerraformVariable
 
-from imports.oci.provider import OciProvider
-from imports.oci.identity_compartment import IdentityCompartment
+from lab.imports.oci.provider import OciProvider
+from lab.imports.oci.identity_compartment import IdentityCompartment
 
 from lab.constructs import Budget, KubernetesCluster
 

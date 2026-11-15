@@ -5,7 +5,7 @@ from lab.libs.k8s.include import Include
 
 from lab.libs.config import CloudflareAcmeIssuerConfig
 
-from imports.io import cert_manager as cm
+from lab.imports.io import cert_manager as cm
 import cdk8s_plus_29 as kplus
 
 
