@@ -1,6 +1,8 @@
 name: IAC
 on:
   pull_request:
+permissions:  # least privilege
+  contents: read
 jobs:
   lint:
     name: Lint
