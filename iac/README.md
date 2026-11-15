@@ -4,6 +4,7 @@
 
 ```
 poetry install
+poetry run labcli sync-imports
 ```
 
 ## Testing
