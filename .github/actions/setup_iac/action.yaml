@@ -1,55 +1,39 @@
 name: Setup IAC project
+description: Build the nix dev shell, install dependencies, and generate imports.
 inputs:
-  python-version:
-    default: "3.14"
-  terraform-version:
-    default: 1.8.3
-  cdktf-cli-version:
-    default: 0.21.0
-  cdk8s-cli-version:
-    default: ^2.198.210
+  generate-imports:
+    description: Whether to generate module and provider code with `labcli sync-imports`.
+    default: "true"
 runs:
   using: composite
   steps:
-    - name: Setup terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: ${{ inputs.terraform-version }}
-        # hashicorp/terraform-cdk#1020
-        terraform_wrapper: false
+    - name: Install nix
+      uses: cachix/install-nix-action@v31
 
-    - name: Setup node
-      uses: actions/setup-node@v3
+    - name: Use the Cachix cache
+      uses: cachix/cachix-action@v17
       with:
-        node-version: "lts/*"
-        cache: npm
-        # we don't have a package-lock.json, we want to cache global
-        # packages, so we bust the cache if this action changes
-        cache-dependency-path: .github/actions/setup_iac/action.yaml
+        name: bfogarty
 
-    - name: Install CLIs
-      run: |
-        npm install -g \
-          cdktf-cli@${{ inputs.cdktf-cli-version }} \
-          cdk8s-cli@${{ inputs.cdk8s-cli-version }}
+    - name: Build the dev shell
+      run: nix develop --command true
       shell: bash
 
-    - name: Install poetry
-      run: pipx install poetry
-      shell: bash
-
-    - name: Setup python
-      uses: actions/setup-python@v4
+    - name: Restore cached Poetry downloads
+      uses: actions/cache@v3
       with:
-        python-version: ${{ inputs.python-version }}
-        cache: poetry
+        path: ~/.cache/pypoetry
+        key: ${{ runner.os }}-poetry-${{ hashFiles('iac/poetry.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-poetry-
 
-    - name: Install project dependencies
-      run: poetry install
-      working-directory: ./iac
+    - name: Install dependencies
+      run: nix develop .. --command poetry install
       shell: bash
+      working-directory: iac
 
     - name: Restore cached module and provider code
+      if: inputs.generate-imports == 'true'
       uses: actions/cache@v3
       with:
         path: iac/lab/imports
@@ -59,6 +43,7 @@ runs:
           ${{ runner.os }}-tf-imports-
 
     - name: Generate module and provider code
-      run: poetry run labcli sync-imports
+      if: inputs.generate-imports == 'true'
+      run: nix develop .. --command poetry run labcli sync-imports
       shell: bash
       working-directory: iac
