@@ -15,6 +15,7 @@ Stack:
 ## Commands
 
 Run all commands from `iac/`, inside the dev shell.
+With direnv, `.envrc` loads it automatically.
 
 Your harness may already run `.agents/prepare` to set up new checkouts.
 If it does not, first enter the dev shell with `nix develop`, then run:

@@ -1,0 +1,4 @@
+# direnv's cached dev shell
+.direnv/
+# Personal direnv overrides
+.envrc.local

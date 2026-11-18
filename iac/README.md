@@ -8,6 +8,9 @@ First, enter the dev shell defined in `flake.nix`:
 nix develop
 ```
 
+With [direnv](https://direnv.net/), the dev shell loads automatically on entering this repository.
+[nix-direnv](https://github.com/nix-community/nix-direnv) is recommended to cache the shell and protect it from garbage collection.
+
 Then, install dependencies and generate imports:
 
 ```
