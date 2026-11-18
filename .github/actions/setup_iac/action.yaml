@@ -54,7 +54,7 @@ runs:
       with:
         path: iac/lab/imports
         # bust cache with same set of `LOCKFILES` as `lab.cli.sync_imports`
-        key: ${{ runner.os }}-tf-imports-${{ hashFiles('iac/cdktf.json','iac/cdk8s.yaml','iac/poetry.lock') }}
+        key: ${{ runner.os }}-tf-imports-${{ hashFiles('iac/cdktf.json','iac/cdk8s.yaml','iac/poetry.lock','flake.lock') }}
         restore-keys: |
           ${{ runner.os }}-tf-imports-
 

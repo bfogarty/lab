@@ -18,7 +18,8 @@ GENERATED_PACKAGE_NAME = "lab.imports"
 #   - cdk8s.yaml: kubernetes imports
 #   - cdktf.json: terraform providers and modules
 #   - poetry.lock: cdktf and cdk8s library versions
-LOCKFILES = ("cdktf.json", "cdk8s.yaml", "poetry.lock")
+#   - ../flake.lock: cdktf and cdk8s CLI versions
+LOCKFILES = ("cdktf.json", "cdk8s.yaml", "poetry.lock", "../flake.lock")
 
 STAMP_FILE = ".labcli-imports-digest"
 
@@ -45,7 +46,7 @@ def missing_imports_hint() -> Generator[None]:
 
 def inputs_digest(iac_dir: Path) -> str:
     """
-    Hashes the files in `iac_dir` that pin import versions.
+    Hashes the files, relative to `iac_dir`, that pin import versions.
     """
     digest = hashlib.sha256()
     for name in LOCKFILES:

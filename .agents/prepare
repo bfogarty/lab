@@ -2,15 +2,15 @@
 # Set up a new agent checkout.
 set -eu
 
-missing=""
-for tool in poetry terraform node cdktf cdk8s; do
-    command -v "$tool" >/dev/null 2>&1 || missing="$missing $tool"
-done
-if [ -n "$missing" ]; then
-    echo "prepare: not found on PATH:$missing" >&2
-    exit 1
+root="$(cd "$(dirname "$0")/.." && pwd)"
+
+# Re-launch inside the flake's dev shell to load dependencies. This is safe to
+# do even if a dev shell is already loaded, and it ensures we're running this
+# checkout's shell. LAB_PREPARE_DEVSHELL limits this to a single recursion.
+if [ -z "${LAB_PREPARE_DEVSHELL:-}" ]; then
+    LAB_PREPARE_DEVSHELL=1 exec nix develop "$root" --command "$root/.agents/prepare" "$@"
 fi
 
-cd "$(dirname "$0")/../iac"
+cd "$root/iac"
 poetry install
 poetry run labcli sync-imports
