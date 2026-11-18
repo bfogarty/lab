@@ -8,7 +8,7 @@ A Python project in a separate repository can install `iac/` as an editable path
 
 Stack:
 
-- Python 3.13 with Poetry
+- Python 3.14 with Poetry
 - cdk8s with `cdk8s-plus-29` (Kubernetes 1.29 API)
 - cdktf 0.21
 

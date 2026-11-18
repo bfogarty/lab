@@ -92,12 +92,12 @@
             packages = [
               # Python project. The cdktf and cdk8s libraries run on Node
               # through jsii.
-              pkgs.python313
+              pkgs.python314
               # Build Poetry on the same Python. Poetry creates the venv with the
               # newest Python it finds that pyproject.toml allows, and its own
               # interpreter is one of them, so a Poetry built on a newer Python
               # would put the venv on that Python instead.
-              (pkgs.poetry.override { python3 = pkgs.python313; })
+              (pkgs.poetry.override { python3 = pkgs.python314; })
               pkgs.pyright
               pkgs.nodejs_24
 
