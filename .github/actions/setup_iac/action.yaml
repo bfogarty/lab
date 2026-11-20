@@ -5,7 +5,7 @@ inputs:
   terraform-version:
     default: 1.8.3
   cdktf-cli-version:
-    default: ^0.20.5
+    default: 0.21.0
   cdk8s-cli-version:
     default: ^2.198.210
 runs:
