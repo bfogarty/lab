@@ -16,6 +16,7 @@ class TestSyncImports:
         iac_dir.mkdir()
         (iac_dir / "cdktf.json").write_text('{"terraformProviders": ["a/b@1"]}')
         (iac_dir / "cdk8s.yaml").write_text("imports: [k8s@1.29.0]")
+        (iac_dir / "poetry.lock").write_text('[[package]]\nname = "cdktf"')
         monkeypatch.setattr(sync_module, "PROJECT_DIR", iac_dir)
         return iac_dir
 
@@ -77,6 +78,18 @@ class TestSyncImports:
         run.clear()
 
         (iac_dir / "cdktf.json").write_text('{"terraformProviders": ["a/b@2"]}')
+        sync_imports(force=False)
+
+        assert len(run) == 2
+
+    @pytest.mark.parametrize("lockfile", ["poetry.lock"])
+    def test_regenerates_when_a_tool_version_changes(
+        self, iac_dir: Path, run: list, output: Path, lockfile: str
+    ) -> None:
+        sync_imports(force=False)
+        run.clear()
+
+        (iac_dir / lockfile).write_text("updated")
         sync_imports(force=False)
 
         assert len(run) == 2

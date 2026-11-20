@@ -13,7 +13,12 @@ from lab import PROJECT_DIR
 
 GENERATED_PACKAGE_NAME = "lab.imports"
 
-LOCKFILES = ("cdktf.json", "cdk8s.yaml")
+# If any of these files change, imports must be regenerated:
+#
+#   - cdk8s.yaml: kubernetes imports
+#   - cdktf.json: terraform providers and modules
+#   - poetry.lock: cdktf and cdk8s library versions
+LOCKFILES = ("cdktf.json", "cdk8s.yaml", "poetry.lock")
 
 STAMP_FILE = ".labcli-imports-digest"
 
