@@ -2,6 +2,14 @@
 
 ## Setup
 
+First, enter the dev shell defined in `flake.nix`:
+
+```
+nix develop
+```
+
+Then, install dependencies and generate imports:
+
 ```
 poetry install
 poetry run labcli sync-imports
