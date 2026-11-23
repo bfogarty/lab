@@ -3,19 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-    # nixpkgs only ships the latest Terraform. This project requires
-    # terraform<1.15. Newer versions fail `cdktf get` on the OKE module
-    # ("Missing required provider configuration ... oci.home").
-    nixpkgs-terraform.url = "github:stackbuilders/nixpkgs-terraform";
   };
 
   outputs =
-    {
-      nixpkgs,
-      nixpkgs-terraform,
-      ...
-    }:
+    { nixpkgs, ... }:
     let
       systems = [
         "aarch64-darwin"
@@ -28,7 +19,11 @@
       devShells = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = import nixpkgs {
+            inherit system;
+            # Terraform's BUSL license is unfree in nixpkgs.
+            config.allowUnfreePredicate = pkg: nixpkgs.lib.getName pkg == "terraform";
+          };
 
           # `cdk8s import` uses jsii-srcmak, which copies jsii dependencies out
           # of the CLI's own package into a temp dir with `fs.copy`. From the
@@ -64,7 +59,7 @@
 
               # cdktn, for the Terraform stacks. Keep `cdktn` in
               # iac/pyproject.toml in sync with cdktn-cli's minor version.
-              nixpkgs-terraform.packages.${system}."terraform-1.14.9"
+              pkgs.terraform
               pkgs.cdktn-cli
 
               # cdk8s, for the Kubernetes charts. It renders Helm charts
