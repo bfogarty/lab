@@ -1,4 +1,4 @@
-from cdktf import TerraformModuleProvider
+from cdktn import TerraformModuleProvider
 
 from constructs import Construct
 

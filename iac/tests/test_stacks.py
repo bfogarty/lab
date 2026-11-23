@@ -1,4 +1,4 @@
-import cdktf
+import cdktn
 import pytest
 
 from lab.stacks import Lab
@@ -10,8 +10,8 @@ class TestLab:
     # errors in TypeScript right now, which makes this difficult to debug.
     @pytest.mark.skip(reason="does not print validation errors")
     def test_terraform_is_valid(self):
-        lab_stack = Lab(cdktf.Testing.app(), "lab")
-        dst = cdktf.Testing.full_synth(lab_stack)
-        assert cdktf.Testing.to_be_valid_terraform(
+        lab_stack = Lab(cdktn.Testing.app(), "lab")
+        dst = cdktn.Testing.full_synth(lab_stack)
+        assert cdktn.Testing.to_be_valid_terraform(
             dst
         ), f"terraform is not valid: {dst}"

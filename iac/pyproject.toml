@@ -9,7 +9,7 @@ labcli = "lab.__main__:app"
 
 [tool.poetry.dependencies]
 python = "^3.13"
-cdktf = "^0.21.0"
+cdktn = "^0.25.0"
 typer = "^0.20.0"
 cdk8s = "^2.68.77"
 pyyaml = "^6.0.1"

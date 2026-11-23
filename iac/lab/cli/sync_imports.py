@@ -17,8 +17,8 @@ GENERATED_PACKAGE_NAME = "lab.imports"
 #
 #   - cdk8s.yaml: kubernetes imports
 #   - cdktf.json: terraform providers and modules
-#   - poetry.lock: cdktf and cdk8s library versions
-#   - ../flake.lock: cdktf and cdk8s CLI versions
+#   - poetry.lock: cdktn and cdk8s library versions
+#   - ../flake.lock: cdktn and cdk8s CLI versions
 LOCKFILES = ("cdktf.json", "cdk8s.yaml", "poetry.lock", "../flake.lock")
 
 STAMP_FILE = ".labcli-imports-digest"
@@ -62,9 +62,9 @@ def sync_imports(
     ] = False,
 ) -> None:
     """
-    Generates or updates the cdktf and cdk8s `lab.imports` package.
+    Generates or updates the cdktn and cdk8s `lab.imports` package.
 
-    Requires `cdktf` and `cdk8s` on PATH.
+    Requires `cdktn` and `cdk8s` on PATH.
     """
     output = PROJECT_DIR.joinpath(*GENERATED_PACKAGE_NAME.split("."))
     stamp = output / STAMP_FILE
@@ -74,7 +74,7 @@ def sync_imports(
         print(f"[green]Imports in {output} are up to date.[/green]")
         return
 
-    for tool in ("cdktf", "cdk8s"):
+    for tool in ("cdktn", "cdk8s"):
         if shutil.which(tool) is None:
             print(f"[red]`{tool}` not found on PATH.[/red]")
             raise typer.Exit(1)
@@ -84,7 +84,7 @@ def sync_imports(
     stamp.unlink(missing_ok=True)
 
     commands = [
-        ["cdktf", "get", "--output", str(output)] + (["--force"] if force else []),
+        ["cdktn", "get", "--output", str(output)] + (["--force"] if force else []),
         # cdk8s import has no --force. It regenerates every time.
         # --no-save: don't rewrite the pinned imports in cdk8s.yaml.
         ["cdk8s", "import", "--no-save", "--output", str(output)],
