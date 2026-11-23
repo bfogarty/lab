@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /.github/actions/*
+    schedule:
+      interval: weekly
+    # Wait a week after each release, so a compromised release is likely to be
+    # caught before it's proposed here.
+    cooldown:
+      default-days: 7
