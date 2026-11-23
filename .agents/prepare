@@ -11,6 +11,5 @@ if [ -z "${LAB_PREPARE_DEVSHELL:-}" ]; then
     LAB_PREPARE_DEVSHELL=1 exec nix develop "$root" --command "$root/.agents/prepare" "$@"
 fi
 
-cd "$root/iac"
-poetry install
-poetry run labcli sync-imports
+cd "$root"
+just setup
