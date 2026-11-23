@@ -1,7 +1,7 @@
 from typing import Annotated
 import typer
 
-from cdktf import App, CloudBackend, NamedCloudWorkspace
+from cdktn import App, CloudBackend, NamedCloudWorkspace
 
 from lab.cli.sync_imports import missing_imports_hint
 from lab.libs.cli import make_typer, make_envvar

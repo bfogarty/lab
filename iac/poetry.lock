@@ -88,22 +88,21 @@ publication = ">=0.0.3"
 typeguard = ">=2.13.3,<4.3.0"
 
 [[package]]
-name = "cdktf"
-version = "0.21.0"
+name = "cdktn"
+version = "0.25.1"
 description = "Cloud Development Kit for Terraform"
 optional = false
-python-versions = "~=3.9"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "cdktf-0.21.0-py3-none-any.whl", hash = "sha256:0a897ff88729bbd37d4d712b55bdc05d130a8786de537beb1951cc029334dd09"},
-    {file = "cdktf-0.21.0.tar.gz", hash = "sha256:7025510eb043317ab6fdf20f81d696cb682fed537eed060d9bdd9809b19903e6"},
+    {file = "cdktn-0.25.1-py3-none-any.whl", hash = "sha256:81bb0958cebd528b4f42befb4dd29bf29a7d9804492902c26b942ce5a89c76c0"},
+    {file = "cdktn-0.25.1.tar.gz", hash = "sha256:ef320db5a250b672bf7892af76f4f6d5457bb42efeb5873b467d893cde0a8602"},
 ]
 
 [package.dependencies]
-constructs = ">=10.4.2,<11.0.0"
-jsii = ">=1.112.0,<2.0.0"
+constructs = ">=10.6.0,<11.0.0"
+jsii = ">=1.140.0,<2.0.0"
 publication = ">=0.0.3"
-typeguard = ">=2.13.3,<4.3.0"
 
 [[package]]
 name = "click"
@@ -135,20 +134,19 @@ markers = {main = "platform_system == \"Windows\"", dev = "sys_platform == \"win
 
 [[package]]
 name = "constructs"
-version = "10.5.1"
+version = "10.8.1"
 description = "A programming model for software-defined state"
 optional = false
-python-versions = "~=3.9"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "constructs-10.5.1-py3-none-any.whl", hash = "sha256:fc5c14f6b2770c8542a43e298aa29b63dee4b18701763e8c0fdce202624c3a7c"},
-    {file = "constructs-10.5.1.tar.gz", hash = "sha256:c0e90bb2b9c2782f292017820b91714321cb78393c8965c9362b0b624bfaf23b"},
+    {file = "constructs-10.8.1-py3-none-any.whl", hash = "sha256:f71297db64723889147c82de46dcacaa76b120f856d5b5ac5f65abb22ea88355"},
+    {file = "constructs-10.8.1.tar.gz", hash = "sha256:9f6e4eb1f6b8b1ac8dcbc85457dcbb1e3f9bd93bbeef03154f6cc7fbbba74b06"},
 ]
 
 [package.dependencies]
-jsii = ">=1.126.0,<2.0.0"
+jsii = ">=1.139.0,<2.0.0"
 publication = ">=0.0.3"
-typeguard = "2.13.3"
 
 [[package]]
 name = "iniconfig"
@@ -683,4 +681,4 @@ typing-extensions = ">=4.12.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "86ade60d3ee1418a0200ee6dcf6409c1e9b443008c5c8fd18473912409f8b4ba"
+content-hash = "a28c7a9f29deab7f2c19f7557f777abcf115c25acd5d8c85139637fab4c51510"

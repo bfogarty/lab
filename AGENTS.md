@@ -10,7 +10,7 @@ Stack:
 
 - Python 3.14 with Poetry
 - cdk8s with `cdk8s-plus-29` (Kubernetes 1.29 API)
-- cdktf 0.21
+- cdktn 0.25 (CDK Terrain, the community fork of cdktf)
 
 ## Commands
 

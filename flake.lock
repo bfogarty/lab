@@ -48,22 +48,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-cdktf": {
-      "locked": {
-        "lastModified": 1782847189,
-        "narHash": "sha256-twXPFqFsrrY5r28Zh7Homgcp2gUMBgQ6WDS98Q/3xFI=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "b6018f87da91d19d0ab4cf979885689b469cdd41",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-25.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-terraform": {
       "inputs": {
         "nixpkgs": "nixpkgs_2",
@@ -104,7 +88,6 @@
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
-        "nixpkgs-cdktf": "nixpkgs-cdktf",
         "nixpkgs-terraform": "nixpkgs-terraform"
       }
     },

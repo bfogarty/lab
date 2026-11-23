@@ -49,5 +49,5 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup cdktf project
+      - name: Setup cdktn project
         uses: ./.github/actions/setup_iac

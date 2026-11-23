@@ -1,5 +1,5 @@
 from constructs import Construct
-from cdktf import TerraformStack, TerraformVariable
+from cdktn import TerraformStack, TerraformVariable
 
 from lab.imports.oci.provider import OciProvider
 from lab.imports.oci.identity_compartment import IdentityCompartment

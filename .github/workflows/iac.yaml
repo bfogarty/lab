@@ -19,7 +19,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup cdktf project
+      - name: Setup cdktn project
         uses: ./.github/actions/setup_iac
         with:
           generate-imports: "false"
@@ -38,7 +38,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup cdktf project
+      - name: Setup cdktn project
         uses: ./.github/actions/setup_iac
 
       - run: nix develop .. --command poetry run pytest

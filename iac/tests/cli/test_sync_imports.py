@@ -16,7 +16,7 @@ class TestSyncImports:
         iac_dir.mkdir()
         (iac_dir / "cdktf.json").write_text('{"terraformProviders": ["a/b@1"]}')
         (iac_dir / "cdk8s.yaml").write_text("imports: [k8s@1.29.0]")
-        (iac_dir / "poetry.lock").write_text('[[package]]\nname = "cdktf"')
+        (iac_dir / "poetry.lock").write_text('[[package]]\nname = "cdktn"')
         (tmp_path / "flake.lock").write_text('{"nodes": {}}')
         monkeypatch.setattr(sync_module, "PROJECT_DIR", iac_dir)
         return iac_dir
@@ -44,7 +44,7 @@ class TestSyncImports:
         sync_imports(force=False)
 
         assert run == [
-            (["cdktf", "get", "--output", str(output)], iac_dir),
+            (["cdktn", "get", "--output", str(output)], iac_dir),
             (["cdk8s", "import", "--no-save", "--output", str(output)], iac_dir),
         ]
         assert (output / STAMP_FILE).exists()
@@ -68,7 +68,7 @@ class TestSyncImports:
         sync_imports(force=True)
 
         assert [command for command, _ in run] == [
-            ["cdktf", "get", "--output", str(output), "--force"],
+            ["cdktn", "get", "--output", str(output), "--force"],
             ["cdk8s", "import", "--no-save", "--output", str(output)],
         ]
 
