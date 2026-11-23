@@ -28,9 +28,8 @@ runs:
           ${{ runner.os }}-poetry-
 
     - name: Install dependencies
-      run: nix develop .. --command poetry install
+      run: nix develop --command just install
       shell: bash
-      working-directory: iac
 
     - name: Restore cached module and provider code
       if: inputs.generate-imports == 'true'
@@ -44,6 +43,5 @@ runs:
 
     - name: Generate module and provider code
       if: inputs.generate-imports == 'true'
-      run: nix develop .. --command poetry run labcli sync-imports
+      run: nix develop --command just sync-imports
       shell: bash
-      working-directory: iac

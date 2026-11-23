@@ -21,16 +21,14 @@ Your harness may already run `.agents/prepare` to set up new checkouts.
 If it does not, first enter the dev shell with `nix develop`, then run:
 
 ```
-poetry install
-poetry run labcli sync-imports
+just setup
 ```
 
 ### Lint and Test
 
 ```
-poetry run pytest
-poetry run ruff check
-poetry run ruff format --check
+just lint
+just test
 ```
 
 ### Run

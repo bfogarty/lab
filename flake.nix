@@ -46,6 +46,9 @@
         {
           default = pkgs.mkShell {
             packages = [
+              # Runs the recipes in justfile.
+              pkgs.just
+
               # Python project. The cdktn and cdk8s libraries run on Node
               # through jsii.
               pkgs.python314
