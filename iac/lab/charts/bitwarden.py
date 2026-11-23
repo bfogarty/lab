@@ -115,5 +115,17 @@ class Bitwarden(Chart):
             "location /admin { deny all; }",
         )
         ing.add_tls(
-            [kplus.IngressTls(hosts=[host], secret=kplus.Secret(self, f"{id_}-tls"))]
+            [
+                kplus.IngressTls(
+                    hosts=[host],
+                    # reference only: cert-manager creates and owns this secret.
+                    # emitting it here (e.g. kplus.Secret(...)) would put an
+                    # empty Opaque secret in the manifest. a secret's type is
+                    # immutable, so if that is applied first cert-manager cannot
+                    # store its kubernetes.io/tls certificate there.
+                    secret=kplus.Secret.from_secret_name(
+                        self, f"{id_}-tls", "bitwarden-tls"
+                    ),
+                )
+            ]
         )

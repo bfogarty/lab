@@ -140,19 +140,17 @@ class TestBitwarden:
             }
         ] == container["volumeMounts"]
 
-    def test_ingress_tls_enabled(
-        self, chart: list[Any], ingress: dict[str, Any]
-    ) -> None:
-        tls_secret = get_resource(chart, "Secret", re.compile(".*bitwarden-tls.*"))
-
+    def test_ingress_tls_enabled(self, ingress: dict[str, Any]) -> None:
         assert {
             "cert-manager.io/cluster-issuer": CLUSTER_ISSUER_NAME,
         }.items() <= ingress["metadata"]["annotations"].items()
 
         hostname = CONFIG.domain.replace("https://", "")
-        assert [
-            {"hosts": [hostname], "secretName": tls_secret["metadata"]["name"]}
-        ] == ingress["spec"]["tls"]
+        expected_tls = [{"hosts": [hostname], "secretName": "bitwarden-tls"}]
+        assert expected_tls == ingress["spec"]["tls"]
+
+    def test_tls_secret_is_not_created(self, chart: list[Any]) -> None:
+        assert get_resource(chart, "Secret", re.compile(".*bitwarden-tls.*")) is None
 
     def test_ingress_admin_deny_all(self, ingress: dict[str, Any]) -> None:
         assert {
