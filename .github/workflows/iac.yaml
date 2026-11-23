@@ -5,6 +5,9 @@ on:
   # pushes to main. Pushes to main run only nondeterministic checks, or side
   # effects that only occur on main, like deploying or pushing to caches.
   pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 permissions:  # least privilege
   contents: read
 jobs:
