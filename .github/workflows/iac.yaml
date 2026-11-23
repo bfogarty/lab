@@ -24,11 +24,7 @@ jobs:
         with:
           generate-imports: "false"
 
-      - run: nix develop .. --command poetry run ruff check
-        working-directory: ./iac
-
-      - run: nix develop .. --command poetry run ruff format --check
-        working-directory: ./iac
+      - run: nix develop --command just lint
 
   test:
     name: Test
@@ -41,5 +37,4 @@ jobs:
       - name: Setup cdktn project
         uses: ./.github/actions/setup_iac
 
-      - run: nix develop .. --command poetry run pytest
-        working-directory: ./iac
+      - run: nix develop --command just test

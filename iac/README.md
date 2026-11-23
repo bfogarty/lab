@@ -14,8 +14,7 @@ With [direnv](https://direnv.net/), the dev shell loads automatically on enterin
 Then, install dependencies and generate imports:
 
 ```
-poetry install
-poetry run labcli sync-imports
+just setup
 ```
 
 ### Binary cache
@@ -32,7 +31,8 @@ extra-trusted-public-keys = bfogarty.cachix.org-1:Q44G+kZZesKfq1fMRcFezSt846t5zg
 ## Testing
 
 ```
-poetry run pytest
+just lint
+just test
 ```
 
 ## Usage
