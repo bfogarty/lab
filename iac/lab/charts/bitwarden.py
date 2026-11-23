@@ -8,6 +8,7 @@ from lab.libs.config import BitwardenConfig
 
 class Bitwarden(Chart):
     VERSION = "1.35.4"
+    IMAGE = f"docker.io/vaultwarden/server:{VERSION}"
 
     def __init__(
         self,
@@ -73,7 +74,7 @@ class Bitwarden(Chart):
         )
 
         main_container = deployment.add_container(
-            image=f"vaultwarden/server:{Bitwarden.VERSION}",
+            image=Bitwarden.IMAGE,
             resources=kplus.ContainerResources(
                 cpu=None,
                 memory=None,
