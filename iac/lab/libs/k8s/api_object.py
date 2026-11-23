@@ -9,11 +9,12 @@ def patch_obj(resource: ApiObject, path: str, data: Any) -> None:
     resource.add_json_patch(JsonPatch.add(path, data))
 
 
-def set_deployment_container_env(
-    deployment: ApiObject, *, container_name: str, env_name: str, env_value: str
-) -> None:
+def _find_deployment_container(
+    deployment: ApiObject, container_name: str
+) -> tuple[str, dict[str, Any]]:
     """
-    Sets an environment variable on a container in a Deployment spec.
+    Returns the JSON Pointer path and spec of the named container in a
+    Deployment spec.
     """
 
     _deployment_name = deployment.metadata.name
@@ -41,8 +42,23 @@ def set_deployment_container_env(
             f"error parsing containers, is '{_deployment_name}' a valid deployment?"
         )
 
+    return (
+        f"/spec/template/spec/containers/{container_index}",
+        containers[container_index],
+    )
+
+
+def set_deployment_container_env(
+    deployment: ApiObject, *, container_name: str, env_name: str, env_value: str
+) -> None:
+    """
+    Sets an environment variable on a container in a Deployment spec.
+    """
+
+    container_path, container = _find_deployment_container(deployment, container_name)
+
     # update the environment
-    current_env = containers[container_index].get("env", [])
+    current_env = container.get("env", [])
 
     if env_name in [x["name"] for x in current_env]:
         # if the env contains the variable, update in place, preserving order
@@ -54,8 +70,4 @@ def set_deployment_container_env(
         # if the env does not contain the variable, append it
         new_env = current_env + [{"name": env_name, "value": env_value}]
 
-    patch_obj(
-        deployment,
-        f"/spec/template/spec/containers/{container_index}/env",
-        new_env,
-    )
+    patch_obj(deployment, f"{container_path}/env", new_env)
