@@ -18,6 +18,17 @@ poetry install
 poetry run labcli sync-imports
 ```
 
+### Binary cache
+
+CI pushes the dev shell's builds to the public cache `https://bfogarty.cachix.org`.
+Without it, some dev shell packages build from source.
+To use the cache, run `cachix use bfogarty`, or add the following to `nix.conf`:
+
+```
+extra-substituters = https://bfogarty.cachix.org
+extra-trusted-public-keys = bfogarty.cachix.org-1:Q44G+kZZesKfq1fMRcFezSt846t5zgQpiDFHTcvrI80=
+```
+
 ## Testing
 
 ```
