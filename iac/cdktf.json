@@ -4,12 +4,12 @@
   "projectId": "d53bc1e2-52ff-4ec6-ab8d-38d9b42b708a",
   "sendCrashReports": "false",
   "terraformProviders": [
-    "oracle/oci@~> 5.41"
+    "oracle/oci@5.47.0"
   ],
   "terraformModules": [{
       "name": "oke",
       "source": "oracle-terraform-modules/oke/oci",
-      "version": "~> 5.1.9"
+      "version": "5.1.9"
   }],
   "codeMakerOutput": "lab/imports",
   "context": {}
