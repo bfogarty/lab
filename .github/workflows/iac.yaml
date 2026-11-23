@@ -1,19 +1,15 @@
 name: IAC
 on:
-  # Pull requests run Lint and Test.
-  pull_request:
   # The repository's rulesets require PRs to be up to date before merge to main,
-  # which safely allows skipping deterministic checks like Lint and Test. Pushes
-  # to main run only nondeterministic checks, or side effects that only occur on
-  # main, like deploying or pushing to caches.
-  push:
-    branches: [main]
+  # which safely allows skipping deterministic checks like Lint and Test on
+  # pushes to main. Pushes to main run only nondeterministic checks, or side
+  # effects that only occur on main, like deploying or pushing to caches.
+  pull_request:
 permissions:  # least privilege
   contents: read
 jobs:
   lint:
     name: Lint
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,7 +27,6 @@ jobs:
 
   test:
     name: Test
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,48 +36,3 @@ jobs:
 
       - run: nix develop .. --command poetry run pytest
         working-directory: ./iac
-
-  # Minimize access to the Cachix token by pushing the dev shell in its own job.
-  # Every step after cachix-action can read the token, so only Nix and Cachix
-  # should run as part of this job.
-  push-dev-shell:
-    name: Push dev shell
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: cachix
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install nix
-        uses: cachix/install-nix-action@v31
-
-      - name: Push builds to the Cachix cache
-        uses: cachix/cachix-action@v17
-        with:
-          name: bfogarty
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-
-      - name: Build the dev shell
-        run: nix develop --profile "$RUNNER_TEMP/dev-shell" --command true
-
-      - name: Pin the dev shell in Cachix
-        # cachix-action has no pin option, and finishes pushing only at the
-        # end of the job. Push the shell first, then pin it to prevent eviction.
-        run: |
-          shell_env="$(readlink -f "$RUNNER_TEMP/dev-shell")"
-          cachix push bfogarty "$shell_env"
-          cachix pin bfogarty lab-devshell "$shell_env" --keep-revisions 1
-
-  # Cache imports. This runs third-party code, so it runs separately from the
-  # dev shell job, but it waits on push-dev-shell to reuse the cached dev shell
-  # rather than build it again.
-  save-imports:
-    name: Save imports
-    if: github.ref == 'refs/heads/main'
-    needs: push-dev-shell
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup cdktf project
-        uses: ./.github/actions/setup_iac
