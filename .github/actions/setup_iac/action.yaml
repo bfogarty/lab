@@ -8,10 +8,10 @@ runs:
   using: composite
   steps:
     - name: Install nix
-      uses: cachix/install-nix-action@v31
+      uses: cachix/install-nix-action@bb0495a1086c46893eee56f32fd192dfe4a15bb9 # v32.0.0
 
     - name: Use the Cachix cache
-      uses: cachix/cachix-action@v17
+      uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
       with:
         name: bfogarty
 
@@ -20,7 +20,7 @@ runs:
       shell: bash
 
     - name: Restore cached Poetry downloads
-      uses: actions/cache@v3
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ~/.cache/pypoetry
         key: ${{ runner.os }}-poetry-${{ hashFiles('iac/poetry.lock') }}
@@ -34,7 +34,7 @@ runs:
 
     - name: Restore cached module and provider code
       if: inputs.generate-imports == 'true'
-      uses: actions/cache@v3
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: iac/lab/imports
         # bust cache with same set of `LOCKFILES` as `lab.cli.sync_imports`
