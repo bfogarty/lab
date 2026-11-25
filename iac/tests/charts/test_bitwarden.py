@@ -85,7 +85,7 @@ class TestBitwarden:
         assert ["ReadWriteOncePod"] == pvc["spec"]["accessModes"]
 
     def test_deployment_image(self, container: dict[str, Any]) -> None:
-        assert f"vaultwarden/server:{Bitwarden.VERSION}" == container["image"]
+        assert f"docker.io/vaultwarden/server:{Bitwarden.VERSION}" == container["image"]
 
     def test_deployment_env(self, chart: list[Any], container: dict[str, Any]) -> None:
         secret = get_resource(chart, "Secret", RESOURCE_NAME_PATTERN)
