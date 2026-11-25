@@ -59,6 +59,7 @@ class TailscaleClusterApiProxy(BaseModel):
 class TailscaleConfig(BaseModel):
     client_id: str
     client_secret: SecretStr
+    operator_hostname: Optional[str] = None
     cluster_api_proxy: Optional[TailscaleClusterApiProxy] = None
 
 
