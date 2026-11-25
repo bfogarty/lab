@@ -7,7 +7,7 @@ from lab.libs.config import BitwardenConfig
 
 
 class Bitwarden(Chart):
-    VERSION = "1.35.4"
+    VERSION = "1.37.5"
     IMAGE = f"docker.io/vaultwarden/server:{VERSION}"
 
     def __init__(
