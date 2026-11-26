@@ -95,6 +95,14 @@ class Tailscale(Chart):
             env_value=Tailscale.PROXY_IMAGE,
         )
 
+        if config.operator_hostname:
+            set_deployment_container_env(
+                operator_deployment,
+                container_name="operator",
+                env_name="OPERATOR_HOSTNAME",
+                env_value=config.operator_hostname,
+            )
+
         if config.cluster_api_proxy:
             self._include_authproxy_rbac_manifest()
             _configure_api_proxy(ts, operator_deployment, config.cluster_api_proxy)

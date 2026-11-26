@@ -69,6 +69,33 @@ class TestTailscaleDefault:
     def test_default_no_api_proxy_rbac(self, chart: list[Any]) -> None:
         assert get_resource(chart, "ClusterRoleBinding", "tailscale-auth-proxy") is None
 
+    def test_default_operator_hostname_is_upstream(self, chart: list[Any]) -> None:
+        deployment = get_resource(chart, "Deployment", "operator")
+        assert {
+            "name": "OPERATOR_HOSTNAME",
+            "value": "tailscale-operator",
+        } in get_default_container_env(deployment)
+
+
+class TestTailscaleOperatorHostname:
+    def test_operator_hostname_overrides_upstream(self) -> None:
+        chart = Tailscale(
+            cdk8s.Testing.app(),
+            "tailscale",
+            config=TailscaleConfig(
+                client_id=CLIENT_ID,
+                client_secret=SecretStr(CLIENT_SECRET),
+                operator_hostname="k8s-operator-test",
+            ),
+        ).to_json()
+
+        deployment = get_resource(chart, "Deployment", "operator")
+        assert [{"name": "OPERATOR_HOSTNAME", "value": "k8s-operator-test"}] == [
+            e
+            for e in get_default_container_env(deployment)
+            if e["name"] == "OPERATOR_HOSTNAME"
+        ]
+
 
 class TestTailscaleApiProxyEnabled:
     @pytest.fixture(scope="class")
