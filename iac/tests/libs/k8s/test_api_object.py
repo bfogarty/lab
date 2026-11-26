@@ -1,5 +1,8 @@
 from lab.libs.exceptions import LabError
-from lab.libs.k8s.api_object import set_deployment_container_env
+from lab.libs.k8s.api_object import (
+    set_deployment_container_env,
+    set_deployment_container_image,
+)
 
 import cdk8s
 import cdk8s_plus_29 as kplus
@@ -139,3 +142,52 @@ class TestSetDeploymentContainerEnv:
             {"name": "test-c", "value": "test-value-old"},
             {"name": "test-d", "value": "test-value"},
         ] == get_default_container_env(deploy_json)
+
+
+class TestSetDeploymentContainerImage:
+    def test_not_a_deployment(self) -> None:
+        pod = kplus.Pod(cdk8s.Testing.chart(), "pod")
+
+        with pytest.raises(
+            LabError, match=f"resource '{pod.name}' is a Pod, expected Deployment"
+        ):
+            set_deployment_container_image(
+                cdk8s.ApiObject.of(pod), container_name="nginx", image="nginx:1"
+            )
+
+    def test_container_not_found(self) -> None:
+        deploy = kplus.Deployment(
+            cdk8s.Testing.chart(),
+            "deployment",
+            containers=[kplus.ContainerProps(image="nginx/nginx")],
+        )
+
+        with pytest.raises(
+            LabError, match=f"container 'nginx' not found in deployment/{deploy.name}"
+        ):
+            set_deployment_container_image(
+                cdk8s.ApiObject.of(deploy), container_name="nginx", image="nginx:1"
+            )
+
+    def test_sets_image_on_named_container(self) -> None:
+        deploy = kplus.Deployment(
+            cdk8s.Testing.chart(),
+            "deployment",
+            containers=[
+                kplus.ContainerProps(name="sidecar", image="busybox"),
+                kplus.ContainerProps(name="nginx", image="nginx/nginx"),
+            ],
+        )
+
+        set_deployment_container_image(
+            cdk8s.ApiObject.of(deploy),
+            container_name="nginx",
+            image="docker.io/nginx/nginx:1.27",
+        )
+
+        containers = cdk8s.ApiObject.of(deploy).to_json()["spec"]["template"]["spec"][
+            "containers"
+        ]
+        assert ["busybox", "docker.io/nginx/nginx:1.27"] == [
+            c["image"] for c in containers
+        ]

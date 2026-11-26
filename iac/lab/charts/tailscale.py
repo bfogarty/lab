@@ -1,12 +1,16 @@
 from typing import cast
 from constructs import Construct
 
-from cdk8s import Chart
+from cdk8s import ApiObject, Chart
 
 from lab.libs.config import TailscaleClusterApiProxy, TailscaleConfig
 from lab.libs.exceptions import LabError
 from lab.libs.k8s.include import Include
-from lab.libs.k8s.api_object import patch_obj, set_deployment_container_env
+from lab.libs.k8s.api_object import (
+    patch_obj,
+    set_deployment_container_env,
+    set_deployment_container_image,
+)
 
 import cdk8s_plus_29 as kplus
 
@@ -20,13 +24,12 @@ def _update_oauth_secret(ts: Include, client_id: str, client_secret: str) -> Non
 
 
 def _configure_api_proxy(
-    ts: Include, api_proxy_config: TailscaleClusterApiProxy
+    ts: Include,
+    operator_deployment: ApiObject,
+    api_proxy_config: TailscaleClusterApiProxy,
 ) -> None:
     # safe: Include may not be the root of the scope tree
     scope = cast(Construct, ts.node.scope)
-
-    if not (operator_deployment := ts.find_object(kind="Deployment", name="operator")):
-        raise LabError("could not find deployment/operator in tailscale manifest")
 
     set_deployment_container_env(
         operator_deployment,
@@ -50,7 +53,14 @@ def _configure_api_proxy(
 
 
 class Tailscale(Chart):
+    # pinned release, used by the manifest URL and image tags below. when
+    # upgrading, pick a version with a "Tailscale Kubernetes Operator" entry in
+    # https://tailscale.com/changelog. only those releases ship images.
     OPERATOR_VERSION = "1.84.2"
+
+    OPERATOR_IMAGE = f"docker.io/tailscale/k8s-operator:v{OPERATOR_VERSION}"
+
+    PROXY_IMAGE = f"docker.io/tailscale/tailscale:v{OPERATOR_VERSION}"
 
     MANIFEST_BASE_URL = f"https://raw.githubusercontent.com/tailscale/tailscale/v{OPERATOR_VERSION}/cmd/k8s-operator/deploy/manifests"
 
@@ -65,9 +75,29 @@ class Tailscale(Chart):
             config.client_secret.get_secret_value(),
         )
 
+        if not (
+            operator_deployment := ts.find_object(kind="Deployment", name="operator")
+        ):
+            raise LabError("could not find deployment/operator in tailscale manifest")
+
+        # upstream's manifests use the `stable`/`unstable` tags, which change
+        # with each release (tailscale/tailscale#10655) and can drift from the
+        # manifest version if not pinned.
+        set_deployment_container_image(
+            operator_deployment,
+            container_name="operator",
+            image=Tailscale.OPERATOR_IMAGE,
+        )
+        set_deployment_container_env(
+            operator_deployment,
+            container_name="operator",
+            env_name="PROXY_IMAGE",
+            env_value=Tailscale.PROXY_IMAGE,
+        )
+
         if config.cluster_api_proxy:
             self._include_authproxy_rbac_manifest()
-            _configure_api_proxy(ts, config.cluster_api_proxy)
+            _configure_api_proxy(ts, operator_deployment, config.cluster_api_proxy)
 
     def _include_operator_manifest(self) -> Include:
         return Include(
