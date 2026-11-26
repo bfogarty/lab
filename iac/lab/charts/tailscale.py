@@ -56,7 +56,7 @@ class Tailscale(Chart):
     # pinned release, used by the manifest URL and image tags below. when
     # upgrading, pick a version with a "Tailscale Kubernetes Operator" entry in
     # https://tailscale.com/changelog. only those releases ship images.
-    OPERATOR_VERSION = "1.84.2"
+    OPERATOR_VERSION = "1.104.7"
 
     OPERATOR_IMAGE = f"docker.io/tailscale/k8s-operator:v{OPERATOR_VERSION}"
 
