@@ -42,6 +42,21 @@ class TestTailscaleDefault:
     def test_includes_operator_manifest(self, chart: list[Any]) -> None:
         assert get_resource(chart, "Deployment", "operator")
 
+    def test_operator_image_pinned(self, chart: list[Any]) -> None:
+        deployment = get_resource(chart, "Deployment", "operator")
+        container = deployment["spec"]["template"]["spec"]["containers"][0]
+        assert (
+            f"docker.io/tailscale/k8s-operator:v{Tailscale.OPERATOR_VERSION}"
+            == container["image"]
+        )
+
+    def test_proxy_image_pinned(self, chart: list[Any]) -> None:
+        deployment = get_resource(chart, "Deployment", "operator")
+        assert {
+            "name": "PROXY_IMAGE",
+            "value": f"docker.io/tailscale/tailscale:v{Tailscale.OPERATOR_VERSION}",
+        } in get_default_container_env(deployment)
+
     def test_oauth_secret(self, chart: list[Any]) -> None:
         secret = get_resource(chart, "Secret", "operator-oauth")
         assert CLIENT_ID == secret["stringData"]["client_id"]

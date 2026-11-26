@@ -71,3 +71,15 @@ def set_deployment_container_env(
         new_env = current_env + [{"name": env_name, "value": env_value}]
 
     patch_obj(deployment, f"{container_path}/env", new_env)
+
+
+def set_deployment_container_image(
+    deployment: ApiObject, *, container_name: str, image: str
+) -> None:
+    """
+    Sets the image of a container in a Deployment spec.
+    """
+
+    container_path, _ = _find_deployment_container(deployment, container_name)
+
+    patch_obj(deployment, f"{container_path}/image", image)
